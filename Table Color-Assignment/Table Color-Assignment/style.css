@@ -1,0 +1,73 @@
+/* Table */
+
+table {
+  border-collapse: collapse;
+  width: 80%;
+  margin: 20px auto;
+}
+
+td {
+  width: 150px;
+  height: 100px;
+  border: 1px solid #000000;
+}
+
+/* Box 1 — HEX */
+.box1 {
+  background-color: #FF6F61;
+}
+
+/* Box 2 — RGB */
+.box2 {
+  background-color: rgb(102, 81, 145);
+}
+
+/* Box 3 — HSL */
+.box3 {
+  background-color: hsl(85, 40%, 55%);
+}
+
+/* Box 4 — HEX */
+.box4 {
+  background-color: #F7C8C8;
+}
+
+/* Box 5 — RGB */
+.box5 {
+  background-color: rgb(140, 165, 205);
+}
+
+/* Box 6 — HSL */
+.box6 {
+  background-color: hsl(10, 30%, 40%);
+}
+
+/* Box 7 — HEX */
+.box7 {
+  background-color: #b564a7;
+}
+
+/* Box 8 — RGB */
+.box8 {
+  background-color: rgba(0, 154, 118);
+}
+
+/* Box 9 — HSL */
+.box9 {
+  background-color: hsl(10, 73%, 50%);
+}
+
+/* Box 10 — HEX */
+.box10 {
+  background-color: #44b8ad;
+}
+
+/* Box 11 — RGB */
+.box11 {
+  background-color: rgba(239, 191, 80);
+}
+
+/* Box 12 — HSL */
+.box12 {
+  background-color: hsl(238, 29%, 50%);
+}
