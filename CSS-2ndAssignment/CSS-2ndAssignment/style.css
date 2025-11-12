@@ -1,0 +1,31 @@
+/* 1. Type Selector: Apply to all divisions (all room names) */
+div {
+  color: blue;
+  padding: 10px;
+  margin: 5px;
+}
+
+/* 2. Class Selector: Bedroom background color */
+.bedroom {
+  background-color: lightblue;
+}
+
+/* 3. ID Selector: Kitchen text color */
+#kitchen {
+  color: orange;
+}
+
+/* 4. Child Selector: Direct children of .house */
+.house > div {
+  background-color: lightgray;
+}
+
+/* 5. Adjacent Sibling Selector: Room immediately after Living Room */
+.house > div:first-child + div {
+  background-color: green;
+}
+
+/* 6. General Sibling Selector: All rooms after the Kitchen */
+#kitchen ~ div {
+  background-color: lightpink;
+}
