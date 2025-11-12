@@ -1,0 +1,100 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap');
+
+/* Local Fonts */
+@font-face {
+  font-family: 'Montserrat';
+  src: url('fonts/Montserrat/Montserrat-Italic-VariableFont_wght.ttf');
+}
+
+@font-face {
+  font-family: 'Roboto';
+  src: url('fonts/Roboto/Roboto-Italic-VariableFont_wdth\,wght.ttf');
+}
+
+/* General Page Style */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f5f6fa;
+  text-align: center;
+  margin: 0;
+  padding: 20px;
+}
+
+h2 {
+  color: #333;
+  margin-bottom: 30px;
+}
+
+/* Card Container */
+.card-container {
+  /* width: 1200px; */
+  margin: 0 auto;
+  text-align: center;
+}
+
+/* Individual Card */
+.card {
+  display: inline-block;
+  vertical-align: top;
+  height: 195px;
+  width: 270px;
+  padding: 20px;
+  margin: 10px;
+  border-radius: 10px;
+  background-color: white;
+  box-shadow: 0px 3px 6px #ccc;
+  cursor: pointer;
+}
+
+/* Card Text */
+.icon {
+  font-size: 50px;
+  margin-bottom: 10px;
+}
+
+h3 {
+  font-size: 18px;
+  margin: 5px 0;
+}
+
+p {
+  color: #555;
+  margin: 5px 0;
+}
+
+.font-info {
+  color: #666;
+  font-size: 13px;
+  margin-top: 8px;
+}
+
+/* Font & Background Colors */
+.montserrat {
+  font-family: 'Montserrat', sans-serif;
+  background-color: #b3e5fc;
+}
+
+.roboto {
+  font-family: 'Roboto', sans-serif;
+  background-color: #ffccbc;
+}
+
+.open-sans {
+  font-family: 'Open Sans', sans-serif;
+  background-color: #c8e6c9;
+}
+
+.playfair {
+  font-family: 'Playfair Display', serif;
+  background-color: #d1c4e9;
+}
+
+.arial {
+  font-family: Arial, sans-serif;
+  background-color: #eeeeee;
+}
+
+.verdana {
+  font-family: Verdana, sans-serif;
+  background-color: #fff59d;
+}
