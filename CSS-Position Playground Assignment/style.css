@@ -1,0 +1,73 @@
+body {
+  font-family: Arial, sans-serif;
+  background-color: #fafafa;
+  margin: 0;
+  padding: 40px;
+  min-height: 2000px;
+}
+
+h2 {
+  text-align: center;
+  font-size: 30px;
+  margin-bottom: 40px;
+}
+
+.playground {
+  position: relative;
+  width: 800px;
+  margin: 0 auto;
+  border: 2px solid #ddd;
+  border-radius: 30px;
+  background: #fff;
+  padding: 40px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+/* Shared Card Style */
+.card {
+  width: 240px;
+  height: 60px;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+  margin: 20px 0;
+  color: #333;
+  font-size: 14px;
+  min-width: 200px;
+}
+
+/* Element A - static */
+.static {
+  background-color: #d5c9f7;
+  position: static;
+}
+
+/* Element B - relative */
+.relative {
+  background-color: #baf5ce;
+  position: relative;
+  left: 20px;
+}
+
+/* Element C - absolute */
+.absolute {
+  background-color: #ffe1b5;
+  position: absolute;
+  top: 0px;
+  right: 10px;
+}
+
+/* Element D - fixed */
+.fixed {
+  background-color: #f7b9b9;
+  position: fixed;
+  bottom: 10px;
+  right: 10px;
+}
+
+/* Element E - sticky */
+.sticky {
+  background-color: #b5d8ff;
+  position: sticky;
+  top: 0;
+}
