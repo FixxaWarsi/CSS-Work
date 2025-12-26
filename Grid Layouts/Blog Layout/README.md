@@ -1,2 +1,3 @@
 **URL ;**
-bloglayouttt.netlify.app
+https://bloglayouttt.netlify.app/
+
