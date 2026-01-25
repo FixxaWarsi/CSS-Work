@@ -1,0 +1,325 @@
+@font-face {
+    font-family: "gilroyy";
+    src: url("Fonts/gilroy/Gilroy-Regular.ttf");
+}
+
+body {
+    font-family: "gilroy";
+}
+
+.btn {
+    width: 150px;
+    height: 50px;
+}
+
+html,
+body {
+    width: 100%;
+    overflow-x: hidden;
+}
+
+.hero-section {
+    padding: 60px 0;
+}
+
+.hero-title {
+    font-size: 2.8rem;
+    font-weight: 800;
+    line-height: 1.2;
+}
+
+.hero-text {
+    color: #777;
+    margin: 20px 0 30px;
+    max-width: 450px;
+}
+
+.download-btn {
+    background: #000;
+    color: #fff;
+    padding: 12px 22px;
+    border-radius: 8px;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-right: 10px;
+    width: 200px;
+}
+
+.download-btn:hover {
+    background: #222;
+    color: #fff;
+}
+
+.hero-img {
+    max-width: 100%;
+}
+
+@media (max-width: 768px) {
+    .hero-title {
+        font-size: 2rem;
+    }
+
+    .hero-section {
+        text-align: center;
+    }
+
+    .hero-text {
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+
+.newsletter-box {
+    background: #75BF7A;
+}
+
+.newsletter-form input {
+    background: #ffffff;
+    border: none;
+    height: 50px;
+}
+
+@media (max-width:576px) {
+    .newsletter-box {
+        text-align: center;
+    }
+}
+
+.how-section {
+    padding: 80px 0;
+    text-align: center;
+}
+
+.how-title {
+    font-size: 2.5rem;
+    font-weight: 800;
+}
+
+.how-title span {
+    color: #7bc67b;
+}
+
+.how-desc {
+    max-width: 550px;
+    margin: 15px auto 60px;
+    color: #888;
+}
+
+.step-box {
+    text-align: center;
+    padding: 20px;
+}
+
+.step-title {
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.step-text {
+    font-size: 14px;
+    color: #888;
+}
+
+.center-circle {
+    width: 260px;
+    height: 260px;
+    background: #75BF7A;
+    border-radius: 50%;
+    margin: auto;
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+    .center-circle {
+        width: 200px;
+        height: 200px;
+        margin: 40px auto;
+    }
+}
+
+.dots-wrapper {
+    margin-top: 50px;
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+}
+
+.dot {
+    width: 8px;
+    height: 8px;
+    background: #cfe9cf;
+    border-radius: 50%;
+}
+
+.dot.active {
+    background: #75BF7A;
+}
+
+.benefits-section {
+    background: url("images/Background.png");
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: 20% 80%;
+    background-attachment: fixed;
+    padding: 80px 0;
+}
+
+.benefits-title {
+    text-align: center;
+    font-weight: 900;
+    font-size: 50px;
+    margin-bottom: 60px;
+}
+
+.benefits-title span {
+    color: #75BF7A;
+}
+
+.benefit-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 40px;
+    margin-bottom: 40px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+}
+
+.benefit-number {
+    font-size: 48px;
+    font-weight: 800;
+    color: #75BF7A;
+}
+
+.benefit-title {
+    font-weight: 700;
+    font-size: 22px;
+    margin-bottom: 10px;
+}
+
+.benefit-text {
+    color: #888;
+    max-width: 350px;
+}
+
+.benefit-img {
+    max-width: 100%;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+    .benefit-card {
+        text-align: center;
+    }
+
+    .benefit-text {
+        margin: auto;
+    }
+}
+
+.footer {
+    background: #fff;
+    border-top: 1px solid #eee;
+    padding: 0.5px 20px 20px;
+    font-family: Arial, sans-serif;
+}
+
+.footer-container {
+    max-width: 1200px;
+    margin: auto;
+    display: flex;
+    gap: 40px;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.footer-col h4 {
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+
+.footer-col p {
+    font-size: 14px;
+    color: #777;
+    margin: 4px 0;
+}
+
+.logo {
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.footer-bottom {
+    text-align: center;
+    margin-top: 30px;
+    font-size: 13px;
+    color: #7cbf7c;
+}
+
+@media (max-width: 768px) {
+    .footer-container {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+}
+
+@media (max-width: 991px) {
+    .navbar-collapse {
+        background-color: #ffffff;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        z-index: 999;
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        padding: 30px 20px;
+        border-radius: 0 0 20px 20px;
+        text-align: center;
+    }
+
+    .navbar-nav {
+        padding-left: 0;
+        padding-right: 0;
+        gap: 15px;
+        margin-bottom: 25px;
+    }
+
+    .nav-link {
+        font-size: 1.1rem;
+        color: #333;
+        font-weight: 600;
+        padding: 10px 0;
+    }
+
+    .nav-link:hover,
+    .nav-link.active {
+        color: #75BF7A;
+
+    }
+
+    .navbar .button {
+        justify-content: center;
+        padding: 0;
+        width: 100%;
+    }
+
+    .navbar .button .btn {
+        width: 100%;
+        max-width: 300px;
+    }
+
+    .navbar-toggler {
+        border: none;
+        padding: 0;
+    }
+
+    .navbar-toggler:focus {
+        box-shadow: none;
+    }
+}
+
+.download-col {
+    flex-direction: row;
+}
