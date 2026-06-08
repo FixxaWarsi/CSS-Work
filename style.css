@@ -1,0 +1,240 @@
+ /* Base Root Properties & Variable Sets */
+ :root {
+     --font-main: 'Poppins', sans-serif;
+     --transition-speed: 300ms;
+
+     /* Premium Dark Glass Theme Configs */
+     --body-bg: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+     --glass-bg: rgba(30, 41, 59, 0.45);
+     --glass-border: rgba(255, 255, 255, 0.08);
+     --glass-shadow: rgba(0, 0, 0, 0.5);
+     --screen-bg: rgba(15, 23, 42, 0.6);
+     --text-primary: #f8fafc;
+
+     /* Button Category Palettes */
+     --color-num: rgba(255, 255, 255, 0.07);
+     --color-num-hover: rgba(255, 255, 255, 0.15);
+     --color-sci: rgba(56, 189, 248, 0.15);
+     --color-sci-hover: rgba(56, 189, 248, 0.3);
+     --color-sci-text: #38bdf8;
+     --color-op: rgba(251, 146, 60, 0.2);
+     --color-op-hover: rgba(251, 146, 60, 0.35);
+     --color-op-text: #fb923c;
+     --color-eq: rgba(34, 197, 94, 0.8);
+     --color-eq-hover: rgba(34, 197, 94, 1);
+     --color-clear: rgba(239, 68, 68, 0.2);
+     --color-clear-hover: rgba(239, 68, 68, 0.35);
+     --color-clear-text: #ef4444;
+     --screen-glow: 0 0 15px rgba(56, 189, 248, 0.2);
+ }
+
+ [data-bs-theme="light"] {
+     /* Premium Light Glass Theme Configs */
+     --body-bg: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+     --glass-bg: rgba(255, 255, 255, 0.65);
+     --glass-border: rgba(15, 23, 42, 0.08);
+     --glass-shadow: rgba(148, 163, 184, 0.3);
+     --screen-bg: rgba(248, 250, 252, 0.85);
+     --text-primary: #0f172a;
+
+     /* Button Category Palettes */
+     --color-num: rgba(15, 23, 42, 0.05);
+     --color-num-hover: rgba(15, 23, 42, 0.12);
+     --color-sci: rgba(2, 132, 199, 0.12);
+     --color-sci-hover: rgba(2, 132, 199, 0.22);
+     --color-sci-text: #0284c7;
+     --color-op: rgba(234, 88, 12, 0.15);
+     --color-op-hover: rgba(234, 88, 12, 0.25);
+     --color-op-text: #ea580c;
+     --color-eq: rgba(22, 163, 74, 0.85);
+     --color-eq-hover: rgba(22, 163, 74, 1);
+     --color-clear: rgba(220, 38, 38, 0.12);
+     --color-clear-hover: rgba(220, 38, 38, 0.22);
+     --color-clear-text: #dc2626;
+     --screen-glow: 0 0 15px rgba(2, 132, 199, 0.1);
+ }
+
+ body {
+     font-family: var(--font-main);
+     background: var(--body-bg);
+     color: var(--text-primary);
+     transition: background var(--transition-speed) ease, color var(--transition-speed) ease;
+     overflow-x: hidden;
+ }
+
+ /* Glassmorphism Structural Cards */
+ .glass-card {
+     background: var(--glass-bg);
+     backdrop-filter: blur(20px);
+     -webkit-backdrop-filter: blur(20px);
+     border: 1px solid var(--glass-border);
+     border-radius: 25px;
+     box-shadow: 0 8px 32px 0 var(--glass-shadow);
+     transition: transform var(--transition-speed) ease, box-shadow var(--transition-speed) ease, background var(--transition-speed) ease;
+ }
+
+ /* Display Screen Custom Elements */
+ .screen-wrapper {
+     background: var(--screen-bg);
+     border-radius: 18px;
+     border: 1px solid var(--glass-border);
+     min-height: 130px;
+     display: flex;
+     flex-direction: column;
+     justify-content: flex-end;
+     box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.1);
+     transition: box-shadow var(--transition-speed) ease;
+ }
+
+ .screen-wrapper:focus-within,
+ .screen-wrapper:hover {
+     box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.1), var(--screen-glow);
+ }
+
+ #main-display {
+     max-height: 90px;
+     overflow-y: auto;
+     scrollbar-width: none;
+ }
+
+ #main-display::-webkit-scrollbar {
+     display: none;
+ }
+
+ /* Premium Adaptive Keys Layout Grid */
+ .btn-ctrl,
+ .btn-mem,
+ .btn-num,
+ .btn-sci,
+ .btn-op,
+ .btn-clear,
+ .btn-eq {
+     border: none;
+     outline: none;
+     border-radius: 14px;
+     font-weight: 500;
+     transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
+     color: var(--text-primary);
+ }
+
+ .btn-ctrl {
+     background: transparent;
+     border: 1px solid var(--glass-border);
+ }
+
+ .btn-ctrl:hover {
+     background: var(--color-num-hover);
+ }
+
+ .btn-mem {
+     font-size: 0.8rem;
+     font-weight: 600;
+     letter-spacing: 0.05rem;
+     background: transparent;
+     opacity: 0.6;
+ }
+
+ .btn-mem:hover {
+     opacity: 1;
+     background: var(--color-num-hover);
+ }
+
+ .btn-num {
+     background: var(--color-num);
+ }
+
+ .btn-num:hover {
+     background: var(--color-num-hover);
+ }
+
+ .btn-sci {
+     background: var(--color-sci);
+     color: var(--color-sci-text);
+     font-size: 0.95rem;
+ }
+
+ .btn-sci:hover {
+     background: var(--color-sci-hover);
+ }
+
+ .btn-op {
+     background: var(--color-op);
+     color: var(--color-op-text);
+     font-size: 1.2rem;
+ }
+
+ .btn-op:hover {
+     background: var(--color-op-hover);
+ }
+
+ .btn-clear {
+     background: var(--color-clear);
+     color: var(--color-clear-text);
+ }
+
+ .btn-clear:hover {
+     background: var(--color-clear-hover);
+ }
+
+ .btn-eq {
+     background: var(--color-eq);
+     color: #fff;
+     font-size: 1.3rem;
+ }
+
+ .btn-eq:hover {
+     background: var(--color-eq-hover);
+     box-shadow: 0 0 12px var(--color-eq);
+ }
+
+ /* Animation Utility Micro-interactions */
+ button:active {
+     transform: scale(0.93) !important;
+ }
+
+ .btn-copy {
+     opacity: 0;
+     background: var(--color-num);
+     color: var(--text-primary);
+     transition: opacity var(--transition-speed);
+     border: 1px solid var(--glass-border);
+ }
+
+ .screen-wrapper:hover .btn-copy {
+     opacity: 1;
+ }
+
+ .btn-copy:hover {
+     background: var(--color-num-hover);
+ }
+
+ /* History Sidebar Scroll System */
+ #history-panel {
+     max-height: 910px;
+ }
+
+ .history-list-container {
+     max-height: 700px;
+     overflow-y: auto;
+ }
+
+ .history-item {
+     background: var(--color-num);
+     border: 1px solid var(--glass-border);
+     border-radius: 10px;
+     cursor: pointer;
+     transition: background 200ms;
+ }
+
+ .history-item:hover {
+     background: var(--color-num-hover);
+ }
+
+ /* Utilities */
+ .cursor-pointer {
+     cursor: pointer;
+ }
+
+ .transition-300 {
+     transition: all 300ms ease;
+ }
