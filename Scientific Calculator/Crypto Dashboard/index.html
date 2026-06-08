@@ -1,0 +1,1793 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ApexCrypto // Premium Analytics Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        /* --- Variable Declarations & Theme Matrix Architecture --- */
+        :root[data-theme="dark"] {
+            --bg-app: #090d16;
+            --bg-card: #111827;
+            --bg-body-inner: #1f2937;
+            --border-glass: rgba(255, 255, 255, 0.12);
+            --text-primary: #f8fafc;
+            --text-secondary: #cbd5e1;
+            --sidebar-bg: #111827;
+            --sidebar-active: #2563eb;
+            --table-hover: rgba(55, 65, 81, 0.6);
+            --ticker-bg: #1f2937;
+            --card-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.7);
+            --input-field-bg: #1f2937;
+            --separator: rgba(255, 255, 255, 0.15);
+        }
+
+        :root[data-theme="light"] {
+            --bg-app: #f1f5f9;
+            --bg-card: #ffffff;
+            --bg-body-inner: #f8fafc;
+            --border-glass: rgba(15, 23, 42, 0.12);
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --sidebar-bg: #ffffff;
+            --sidebar-active: #3b82f6;
+            --table-hover: rgba(226, 232, 240, 0.8);
+            --ticker-bg: #e2e8f0;
+            --card-shadow: 0 10px 25px -5px rgba(148, 163, 184, 0.2);
+            --input-field-bg: #ffffff;
+            --separator: rgba(15, 23, 42, 0.12);
+        }
+
+        /* --- Core Resets & Typographical Parameters --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-app);
+            color: var(--text-primary);
+            transition: background-color 0.3s ease, color 0.3s ease;
+            overflow-x: hidden;
+        }
+
+        /* --- Global Custom Scrollbar Engine (Sleek UI) --- */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(156, 163, 175, 0.3);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(156, 163, 175, 0.6);
+        }
+
+        /* Specific inner wrapper overrides for table container */
+        .table-responsive::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        /* --- Global Fixed Top Layout Structure Engine --- */
+        .fixed-top-group {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1050;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .workspace-container {
+            margin-top: 106px;
+        }
+
+        /* --- Fixed Element Child Blocks --- */
+        .ticker-wrap {
+            background-color: var(--ticker-bg);
+            border-bottom: 1px solid var(--border-glass);
+            overflow: hidden;
+            height: 36px;
+            display: flex;
+            align-items: center;
+        }
+
+        .ticker {
+            display: inline-flex;
+            white-space: nowrap;
+            padding-right: 50%;
+            animation: marquee 35s linear infinite;
+        }
+
+        @keyframes marquee {
+            0% {
+                transform: translate3d(0, 0, 0);
+            }
+
+            100% {
+                transform: translate3d(-100%, 0, 0);
+            }
+        }
+
+        .ticker:hover {
+            animation-play-state: paused;
+        }
+
+        .dashboard-header {
+            background-color: var(--bg-card);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-glass);
+            height: 70px;
+        }
+
+        /* --- Theme Contrast-Optimization Layer --- */
+        .text-light-strong {
+            color: var(--text-primary) !important;
+        }
+
+        .text-muted-strong {
+            color: var(--text-secondary) !important;
+        }
+
+        .header-icon-color {
+            color: var(--text-primary);
+        }
+
+        .search-icon-color {
+            color: var(--text-secondary);
+        }
+
+        .separator-line {
+            border-color: var(--separator) !important;
+        }
+
+        /* --- Theme Enforced Form Inputs & Dark Mode Overrides --- */
+        .form-select,
+        .form-control,
+        .search-input-field {
+            background-color: var(--input-field-bg) !important;
+            border: 1px solid var(--border-glass) !important;
+            color: var(--text-primary) !important;
+        }
+
+        .form-select:focus,
+        .form-control:focus,
+        .search-input-field:focus {
+            background-color: var(--input-field-bg) !important;
+            color: var(--text-primary) !important;
+            border-color: var(--sidebar-active) !important;
+            box-shadow: 0 0 0 0.25rem rgba(37, 99, 235, 0.25) !important;
+        }
+
+        .form-select option {
+            background-color: var(--bg-card);
+            color: var(--text-primary);
+        }
+
+        .search-input-field::placeholder,
+        .form-control::placeholder {
+            color: var(--text-secondary) !important;
+            opacity: 0.7;
+        }
+
+        /* Force dark card variations inside dynamic loops */
+        .bg-body,
+        .bg-body-inner {
+            background-color: var(--bg-body-inner) !important;
+            color: var(--text-primary) !important;
+        }
+
+        .hover-card {
+            border: 1px solid var(--border-glass) !important;
+            transition: transform 0.2s ease, background-color 0.2s ease;
+        }
+
+        .hover-card:hover {
+            background-color: var(--table-hover) !important;
+            transform: translateY(-2px);
+        }
+
+        /* --- Sidebar Navigation Frame --- */
+        .sidebar {
+            width: 260px;
+            background-color: var(--sidebar-bg);
+            border-right: 1px solid var(--border-glass);
+            height: calc(100vh - 106px);
+            position: sticky;
+            top: 106px;
+            z-index: 1040;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar .nav-link {
+            color: var(--text-secondary);
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+        }
+
+        .sidebar .nav-link:hover {
+            color: var(--text-primary);
+            background-color: var(--table-hover);
+        }
+
+        .sidebar .nav-link.active {
+            background-color: var(--sidebar-active) !important;
+            color: #ffffff !important;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        }
+
+        .content-wrapper {
+            width: calc(100% - 260px);
+            min-height: calc(100vh - 106px);
+        }
+
+        /* --- Premium Layout & Height Balancing Features --- */
+        .bg-card {
+            background-color: var(--bg-card) !important;
+            border: 1px solid var(--border-glass) !important;
+            border-radius: 16px;
+            box-shadow: var(--card-shadow);
+        }
+
+        @media (min-width: 1200px) {
+            .items-stretch-row {
+                display: flex;
+                align-items: stretch;
+            }
+
+            .split-widgets-panel {
+                height: 100%;
+            }
+
+            .widget-split-card {
+                flex: 1 1 calc(50% - 12px);
+            }
+        }
+
+        /* --- UI Component Utilities --- */
+        .text-xs {
+            font-size: 0.75rem !important;
+        }
+
+        .text-sm {
+            font-size: 0.875rem !important;
+        }
+
+        .max-w-md {
+            max-width: 420px;
+        }
+
+        .asset-logo {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+        }
+
+        .mix-chart-canvas {
+            height: 320px !important;
+        }
+
+        .allocation-canvas {
+            max-width: 260px;
+            max-height: 260px;
+        }
+
+        /* --- Table Styles Overhaul --- */
+        .custom-table {
+            color: var(--text-primary) !important;
+            margin-bottom: 0;
+        }
+
+        .custom-table th {
+            background-color: transparent !important;
+            color: var(--text-secondary) !important;
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 14px 16px;
+            border-bottom: 2px solid var(--border-glass) !important;
+        }
+
+        .custom-table td {
+            background-color: transparent !important;
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--border-glass) !important;
+            font-size: 0.875rem;
+            color: var(--text-primary) !important;
+            font-weight: 500;
+        }
+
+        .custom-table tbody tr {
+            transition: background-color 0.15s ease;
+        }
+
+        .custom-table tbody tr:hover {
+            background-color: var(--table-hover) !important;
+        }
+
+        .theme-toggle-btn {
+            background: var(--table-hover);
+            border: 1px solid var(--border-glass);
+        }
+
+        .sync-action-btn:hover {
+            color: #ffffff !important;
+        }
+
+        /* --- Functional Micro-Animations --- */
+        .animate-fade {
+            animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(6px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.4;
+            }
+        }
+
+        .animate-pulse {
+            animation: pulse 2s infinite;
+        }
+
+        .transition-all {
+            transition: all 0.2s ease-in-out;
+        }
+
+        .cursor-pointer {
+            cursor: pointer;
+        }
+
+        /* --- Responsive Layout Parameters --- */
+        @media (max-width: 991.98px) {
+            .sidebar {
+                position: fixed;
+                left: -260px;
+                top: 0;
+                height: 100vh;
+                box-shadow: 20px 0 40px rgba(0, 0, 0, 0.6);
+            }
+
+            .sidebar.open {
+                left: 0;
+            }
+
+            .content-wrapper {
+                width: 100%;
+            }
+
+            .workspace-container {
+                margin-top: 106px;
+            }
+        }
+
+        .skeleton-card {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .skeleton-card::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            transform: translateX(-100%);
+            background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.08) 20%, rgba(255, 255, 255, 0.15) 60%, rgba(255, 255, 255, 0) 100%);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            100% {
+                transform: translateX(100%);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="fixed-top-group">
+        <div class="ticker-wrap w-100">
+            <div class="ticker" id="price-ticker">
+                <span class="px-3 text-light-strong"><i class="fas fa-spinner fa-spin me-2"></i>Loading live market
+                    streaming updates...</span>
+            </div>
+        </div>
+
+        <header class="navbar navbar-expand px-4 py-3 dashboard-header shadow-sm">
+            <div class="container-fluid p-0 gap-3">
+                <button class="btn btn-link link-body-emphasis p-0 border-0 d-lg-none" id="sidebarToggle">
+                    <i class="fa-solid fa-bars-staggered fs-4 header-icon-color"></i>
+                </button>
+
+                <div class="search-box position-relative flex-grow-1 max-w-md d-none d-sm-block">
+                    <i
+                        class="fa-solid fa-magnifying-glass position-absolute start-0 top-50 translate-middle-y ms-3 search-icon-color"></i>
+                    <input type="text"
+                        class="form-control rounded-pill ps-5 bg-card border-0 py-2 text-sm search-input-field"
+                        placeholder="Search asset by name or symbol (e.g., BTC, Ethereum)..." id="globalSearch">
+                </div>
+
+                <div class="ms-auto d-flex align-items-center gap-3">
+                    <div class="d-none d-md-flex flex-column text-end">
+                        <span class="text-xs text-success fw-bold" id="market-status-badge"><i
+                                class="fa-solid fa-circle text-success me-1 text-xs animate-pulse"></i> Market
+                            Live</span>
+                        <span class="text-xs fw-bold text-light-strong" id="header-datetime">--:--:-- --</span>
+                    </div>
+                    <div class="vr mx-1 d-none d-md-block separator-line"></div>
+                    <div class="dropdown">
+                        <button class="btn p-0 border-0 position-relative" type="button" data-bs-toggle="dropdown">
+                            <i class="fa-regular fa-bell fs-5 header-icon-color"></i>
+                            <span
+                                class="position-absolute top-0 start-100 translate-middle p-1 bg-primary border border-light rounded-circle"></span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end bg-card border-0 shadow mt-2">
+                            <li>
+                                <h6 class="dropdown-header text-light-strong fw-bold">Notifications</h6>
+                            </li>
+                            <li><a class="dropdown-item text-xs py-2 border-bottom border-secondary-subtle text-light-strong"
+                                    href="#">System Alert: Market Refresh Automated</a></li>
+                            <li><a class="dropdown-item text-xs text-center py-2 text-primary text-decoration-none fw-bold"
+                                    href="#">Clear All</a></li>
+                        </ul>
+                    </div>
+                    <div class="d-flex align-items-center gap-2 border-start ps-3 separator-line">
+                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=100"
+                            alt="Avatar" class="rounded-circle asset-logo object-fit-cover" width="32" height="32">
+                        <span class="fw-bold text-sm d-none d-sm-inline text-light-strong">FintechTrader</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+    </div>
+
+    <div class="d-flex workspace-container position-relative">
+
+        <nav class="sidebar py-4 px-3 d-flex flex-column" id="mainSidebar">
+            <div class="sidebar-header d-flex align-items-center justify-content-between mb-4 px-2">
+                <div class="d-flex align-items-center gap-2">
+                    <div class="logo-icon"><i class="fa-solid fa-cubes-stacked text-primary fs-4"></i></div>
+                    <span class="fs-5 fw-bold tracking-wide logo-text text-light-strong">Apex<span
+                            class="text-primary">Crypto</span></span>
+                </div>
+                <button class="btn border-0 text-light-strong d-lg-none" id="sidebarClose"><i
+                        class="fas fa-times fs-5"></i></button>
+            </div>
+
+            <ul class="nav flex-column gap-1 flex-grow-1" id="sidebarMenu">
+                <li class="nav-item">
+                    <a href="#dashboard" class="nav-link active d-flex align-items-center gap-3 py-2.5 px-3 rounded-3"
+                        data-target="dashboard-view">
+                        <i class="fa-solid fa-chart-pie fs-5"></i> <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#markets" class="nav-link d-flex align-items-center gap-3 py-2.5 px-3 rounded-3"
+                        data-target="markets-view">
+                        <i class="fa-solid fa-money-bill-trend-up fs-5"></i> <span>Markets</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#portfolio" class="nav-link d-flex align-items-center gap-3 py-2.5 px-3 rounded-3"
+                        data-target="portfolio-view">
+                        <i class="fa-solid fa-wallet fs-5"></i> <span>Portfolio</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#watchlist" class="nav-link d-flex align-items-center gap-3 py-2.5 px-3 rounded-3"
+                        data-target="watchlist-view">
+                        <i class="fa-solid fa-star fs-5"></i> <span>Watchlist</span>
+                    </a>
+                </li>
+            </ul>
+
+            <div class="sidebar-footer pt-3 mt-auto border-top border-secondary-subtle">
+                <button
+                    class="btn w-100 d-flex align-items-center justify-content-between theme-toggle-btn px-3 py-2 rounded-3"
+                    id="themeToggle">
+                    <span class="d-flex align-items-center gap-3"><i class="fa-solid fa-moon fs-5 text-light-strong"
+                            id="themeIcon"></i> <span id="themeText" class="text-light-strong fw-medium">Dark
+                            Mode</span></span>
+                    <div class="form-check form-switch m-0 p-0"><input class="form-check-input pointer-events-none"
+                            type="checkbox" checked id="themeSwitchCheck"></div>
+                </button>
+            </div>
+        </nav>
+
+        <div class="content-wrapper d-flex flex-column flex-grow-1 min-vh-100 overflow-x-hidden">
+            <main class="container-fluid p-4 flex-grow-1">
+
+                <div id="dashboard-view" class="view-section animate-fade">
+                    <div class="row g-3 mb-4" id="stats-container">
+                        <div class="col-12 col-sm-6 col-xl-3">
+                            <div class="card bg-card border-0 p-3 h-100 skeleton-card">
+                                <div class="text-xs text-muted-strong text-uppercase mb-1 fw-bold">Global Market Cap
+                                </div>
+                                <div class="h4 fw-bold text-light-strong mb-1" id="stat-market-cap">$0.00</div>
+                                <div class="text-xs text-success fw-bold" id="stat-market-cap-change">0.00%</div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-sm-6 col-xl-3">
+                            <div class="card bg-card border-0 p-3 h-100 skeleton-card">
+                                <div class="text-xs text-muted-strong text-uppercase mb-1 fw-bold">24h Trading Volume
+                                </div>
+                                <div class="h4 fw-bold text-light-strong mb-1" id="stat-volume">$0.00</div>
+                                <div class="text-xs text-muted-strong fw-medium">Global aggregated</div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-sm-6 col-xl-3">
+                            <div class="card bg-card border-0 p-3 h-100 skeleton-card">
+                                <div class="text-xs text-muted-strong text-uppercase mb-1 fw-bold">BTC Dominance</div>
+                                <div class="h4 fw-bold text-light-strong mb-1" id="stat-btc-dominance">0.00%</div>
+                                <div class="text-xs text-muted-strong fw-medium">Market capitalization ratio</div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-sm-6 col-xl-3">
+                            <div class="card bg-card border-0 p-3 h-100 skeleton-card">
+                                <div class="text-xs text-muted-strong text-uppercase mb-1 fw-bold">Fear & Greed Index
+                                </div>
+                                <div class="h4 fw-bold text-light-strong mb-1" id="stat-fear-greed">--</div>
+                                <div class="text-xs fw-bold text-warning" id="stat-fear-greed-label">Neutral</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row g-4 mb-4">
+                        <div class="col-12 col-xl-8">
+                            <div class="card bg-card border-0 p-4 h-100">
+                                <div class="d-flex align-items-center justify-content-between mb-3">
+                                    <div>
+                                        <h5 class="mb-0 fw-bold text-light-strong">Macro Price Projections</h5>
+                                        <span class="text-xs text-muted-strong fw-medium">Comparative trends of top-tier
+                                            assets</span>
+                                    </div>
+                                    <div class="chart-legends"></div>
+                                </div>
+                                <div class="chart-container position-relative flex-grow-1 mix-chart-canvas">
+                                    <canvas id="lineChartProjections"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-xl-4">
+                            <div class="card bg-card border-0 p-4 h-100">
+                                <h5 class="mb-1 fw-bold text-light-strong">Market Share Allocation</h5>
+                                <p class="text-xs text-muted-strong fw-medium mb-3">Dominance Distribution Matrix</p>
+                                <div class="chart-container position-relative m-auto allocation-canvas">
+                                    <canvas id="doughnutDominance"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row g-4 mb-4 items-stretch-row">
+                        <div class="col-12 col-xl-8 d-flex flex-column">
+                            <div class="card bg-card border-0 p-4 h-100 d-flex flex-column">
+                                <div class="d-flex justify-content-between align-items-center mb-3 flex-shrink-0">
+                                    <h5 class="m-0 fw-bold text-light-strong">Market Overview (Top 20)</h5>
+                                    <button
+                                        class="btn btn-sm btn-outline-primary rounded-pill text-xs px-3 shadow-sm fw-bold sync-action-btn"
+                                        id="refreshMarketsBtn">
+                                        <i class="fa-solid fa-arrows-rotate me-1"></i> Sync Now
+                                    </button>
+                                </div>
+                                <div class="table-responsive flex-grow-1 overflow-y-auto" style="max-height: 520px;">
+                                    <table class="table align-middle custom-table" id="marketTable">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col" class="text-center">#</th>
+                                                <th scope="col">Asset</th>
+                                                <th scope="col" class="text-end cursor-pointer" data-sort="price">Price
+                                                    <i class="fa-solid fa-sort ms-1 text-xs"></i>
+                                                </th>
+                                                <th scope="col" class="text-end cursor-pointer" data-sort="change">24h
+                                                    Change <i class="fa-solid fa-sort ms-1 text-xs"></i></th>
+                                                <th scope="col" class="text-end d-none d-md-table-cell cursor-pointer"
+                                                    data-sort="market_cap">Market Cap <i
+                                                        class="fa-solid fa-sort ms-1 text-xs"></i></th>
+                                                <th scope="col" class="text-end d-none d-lg-table-cell">24h Volume</th>
+                                                <th scope="col" class="text-center">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="marketTableBody">
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-xl-4 d-flex flex-column justify-content-between split-widgets-panel">
+                            <div
+                                class="card bg-card border-0 p-4 mb-4 flex-grow-1 d-flex flex-column widget-split-card">
+                                <h5 class="mb-1 fw-bold text-light-strong">Trending Assets</h5>
+                                <p class="text-xs text-muted-strong fw-medium mb-3">Highly targeted user search
+                                    analytics</p>
+                                <div class="d-flex flex-column gap-2 flex-grow-1 justify-content-center"
+                                    id="trendingCoinsContainer">
+                                </div>
+                            </div>
+
+                            <div class="card bg-card border-0 p-4 flex-grow-1 d-flex flex-column widget-split-card">
+                                <h5 class="mb-3 fw-bold text-light-strong">Top Performers</h5>
+                                <ul class="nav nav-pills mb-3 gap-2 flex-shrink-0" id="pills-tab" role="tablist">
+                                    <li class="nav-item" role="presentation">
+                                        <button
+                                            class="btn btn-xs btn-outline-success active rounded-pill text-xs px-3 fw-bold"
+                                            id="pills-gainers-tab" data-bs-toggle="pill" data-bs-target="#pills-gainers"
+                                            type="button" role="tab">Top Gainers</button>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                        <button class="btn btn-xs btn-outline-danger rounded-pill text-xs px-3 fw-bold"
+                                            id="pills-losers-tab" data-bs-toggle="pill" data-bs-target="#pills-losers"
+                                            type="button" role="tab">Top Losers</button>
+                                    </li>
+                                </ul>
+                                <div class="tab-content flex-grow-1 d-flex flex-column justify-content-center"
+                                    id="pills-tabContent">
+                                    <div class="tab-pane fade show active w-100" id="pills-gainers" role="tabpanel">
+                                        <div class="d-flex flex-column gap-2" id="gainers-list"></div>
+                                    </div>
+                                    <div class="tab-pane fade w-100" id="pills-losers" role="tabpanel">
+                                        <div class="d-flex flex-column gap-2" id="losers-list"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="markets-view" class="view-section d-none animate-fade">
+                    <div class="card bg-card border-0 p-4">
+                        <h4 class="mb-3 fw-bold text-light-strong">Comprehensive Asset Terminal</h4>
+                        <p class="text-muted-strong text-sm mb-4 fw-medium">Analyze real-time dynamics, institutional
+                            volumes, and order indices.</p>
+                        <div class="row g-3 mb-4">
+                            <div class="col-12 col-md-6">
+                                <input type="text"
+                                    class="form-control bg-body border-0 py-2 rounded-3 text-sm search-input-field"
+                                    id="marketViewSearch" placeholder="Filter markets by token metadata...">
+                            </div>
+                        </div>
+                        <div id="marketTerminalContainer"></div>
+                    </div>
+                </div>
+
+                <div id="portfolio-view" class="view-section d-none animate-fade">
+                    <div class="row g-4">
+                        <div class="col-12 col-lg-4">
+                            <div class="card bg-card border-0 p-4 shadow-sm position-sticky"
+                                style="top: 130px; z-index: 10;">
+                                <h4 class="mb-2 fw-bold text-light-strong">Position Management</h4>
+                                <p class="text-xs text-muted-strong fw-medium mb-4">Track, structure, and compute
+                                    decentralized spot balances.</p>
+                                <form id="portfolio-form">
+                                    <div class="mb-3">
+                                        <label class="form-label text-xs fw-bold text-muted-strong text-uppercase">Asset
+                                            Selection</label>
+                                        <select class="form-select bg-body border-0 text-sm text-light-strong fw-medium"
+                                            id="portfolio-coin" required>
+                                            <option value="" disabled selected>Loading system registry...</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label text-xs fw-bold text-muted-strong text-uppercase">Token
+                                            Quantity</label>
+                                        <input type="number" step="any" min="0.00000001"
+                                            class="form-control bg-body border-0 text-sm text-light-strong font-monospace"
+                                            id="portfolio-qty" placeholder="0.00" required>
+                                    </div>
+                                    <div class="mb-4">
+                                        <label
+                                            class="form-label text-xs fw-bold text-muted-strong text-uppercase">Average
+                                            Buy Price (USD)</label>
+                                        <input type="number" step="any" min="0.00000001"
+                                            class="form-control bg-body border-0 text-sm text-light-strong font-monospace"
+                                            id="portfolio-price" placeholder="$0.00" required>
+                                    </div>
+                                    <button type="submit"
+                                        class="btn btn-primary w-100 rounded-3 py-2 fw-bold text-sm transition-all"
+                                        id="addAssetBtn">
+                                        <i class="fa-solid fa-plus-circle me-1"></i> Commit Transaction
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-8">
+                            <div class="card bg-card border-0 p-4 h-100">
+                                <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+                                    <div>
+                                        <h4 class="mb-1 fw-bold text-light-strong">Aggregated Net Asset Value (NAV)</h4>
+                                        <h2 class="fw-bold tracking-tight text-primary m-0" id="portfolio-total-value">
+                                            $0.00</h2>
+                                    </div>
+                                    <div class="text-end">
+                                        <span class="text-xs text-muted-strong text-uppercase fw-bold block mb-1">Total
+                                            Net Unrealized PnL</span>
+                                        <div class="h4 fw-bold m-0 text-light-strong" id="portfolio-total-pnl">$0.00
+                                            (0.00%)</div>
+                                    </div>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table align-middle custom-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Asset</th>
+                                                <th class="text-end">Balance Holdings</th>
+                                                <th class="text-end">Avg Entry</th>
+                                                <th class="text-end">Mark Price</th>
+                                                <th class="text-end">Current Value</th>
+                                                <th class="text-end">Unrealized PnL</th>
+                                                <th class="text-center">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="portfolioTableBody">
+                                            <tr>
+                                                <td colspan="7"
+                                                    class="text-center py-4 text-muted-strong text-xs fw-medium">No
+                                                    execution history recorded in local storage database.</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="watchlist-view" class="view-section d-none animate-fade">
+                    <div class="card bg-card border-0 p-4">
+                        <h4 class="mb-1 fw-bold text-light-strong">Institutional Watchlist</h4>
+                        <p class="text-muted-strong text-sm mb-4 fw-medium">Monitor customized priority tokens and
+                            volatile indexes.</p>
+                        <div class="row g-3" id="watchlistContainer">
+                            <div class="col-12 text-center py-5 text-muted-strong text-xs fw-medium">
+                                <i class="fa-regular fa-star d-block fs-2 mb-2 text-secondary-subtle"></i>
+                                Custom indices unallocated. Access the central node dashboard matrix to flag operational
+                                assets.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </main>
+
+            <footer
+                class="footer mt-auto py-3 px-4 bg-card border-top border-secondary-subtle d-flex flex-wrap justify-content-between align-items-center gap-2">
+                <span class="text-xs text-muted-strong fw-medium">Data feed dynamically managed via <a
+                        href="https://www.coingecko.com" target="_blank"
+                        class="text-decoration-none text-primary fw-bold">CoinGecko Public APIs Vector</a>.</span>
+                <span class="text-xs text-muted-strong fw-medium">&copy; <span id="current-year"></span> ApexCrypto
+                    Node. Institutional Grade UI.</span>
+                <div class="d-flex gap-3">
+                    <a href="#" class="text-muted-strong hover-primary transition-all"><i
+                            class="fa-brands fa-x-twitter fs-6"></i></a>
+                    <a href="#" class="text-muted-strong hover-primary transition-all"><i
+                            class="fa-brands fa-github fs-6"></i></a>
+                    <a href="#" class="text-muted-strong hover-primary transition-all"><i
+                            class="fa-brands fa-telegram fs-6"></i></a>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    <div class="modal fade" id="cryptoDetailsModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content border-0 bg-card shadow-lg">
+                <div class="modal-header border-bottom border-secondary-subtle px-4 py-3">
+                    <div class="d-flex align-items-center gap-3" id="modal-header-profile">
+                        <div class="skeleton-circle" style="width:36px;height:36px;"></div>
+                        <div class="skeleton-text" style="width:120px;height:20px;"></div>
+                    </div>
+                    <button type="button" class="btn-close btn-close-white" data-bs-shadow="none"
+                        data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4" id="modal-details-body">
+                    <div class="text-center py-5"><i class="fas fa-circle-notch fa-spin text-primary fs-3"></i></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1090;"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        /**
+ * ApexCrypto Core Engine Orchestrator
+ * Fully Functional Asynchronous Architecture
+ */
+
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // --- Application State Model Matrix ---
+            const APP_STATE = {
+                theme: localStorage.getItem('apex-theme') || 'dark',
+                marketData: [],
+                globalStats: {},
+                trendingData: [],
+                watchlist: JSON.parse(localStorage.getItem('apex-watchlist')) || [],
+                portfolio: JSON.parse(localStorage.getItem('apex-portfolio')) || [],
+                sortKey: 'rank',
+                sortDirection: 'asc',
+                activeView: 'dashboard-view',
+                searchQuery: ''
+            };
+
+            // --- Chart Instance Registries ---
+            let lineChartInstance = null;
+            let doughnutChartInstance = null;
+
+            // --- Global DOM Node References ---
+            const cacheNodes = {
+                sidebar: document.getElementById('mainSidebar'),
+                sidebarToggle: document.getElementById('sidebarToggle'),
+                sidebarClose: document.getElementById('sidebarClose'),
+                sidebarMenu: document.getElementById('sidebarMenu'),
+                themeToggle: document.getElementById('themeToggle'),
+                themeIcon: document.getElementById('themeIcon'),
+                themeText: document.getElementById('themeText'),
+                themeSwitch: document.getElementById('themeSwitchCheck'),
+                headerTime: document.getElementById('header-datetime'),
+                globalSearch: document.getElementById('globalSearch'),
+                marketSearch: document.getElementById('marketViewSearch'),
+                marketTableBody: document.getElementById('marketTableBody'),
+                trendingContainer: document.getElementById('trendingCoinsContainer'),
+                gainersList: document.getElementById('gainers-list'),
+                losersList: document.getElementById('losers-list'),
+                ticker: document.getElementById('price-ticker'),
+                portfolioForm: document.getElementById('portfolio-form'),
+                portfolioCoinSelect: document.getElementById('portfolio-coin'),
+                portfolioTableBody: document.getElementById('portfolioTableBody'),
+                portfolioTotalValue: document.getElementById('portfolio-total-value'),
+                portfolioTotalPnl: document.getElementById('portfolio-total-pnl'),
+                watchlistContainer: document.getElementById('watchlistContainer'),
+                refreshMarketsBtn: document.getElementById('refreshMarketsBtn'),
+                currentYearSpan: document.getElementById('current-year'),
+                cryptoModal: new bootstrap.Modal(document.getElementById('cryptoDetailsModal')),
+                modalHeaderProfile: document.getElementById('modal-header-profile'),
+                modalDetailsBody: document.getElementById('modal-details-body'),
+                marketTerminalContainer: document.getElementById('marketTerminalContainer')
+            };
+
+            // --- Application Core Operational Initializer ---
+            function init() {
+                setupTheme();
+                initClock();
+                bindEvents();
+                syncDataPipeline();
+
+                // Register Automated Refresh Protocol Interceptor loop (60 Seconds frequency lifecycle)
+                setInterval(syncDataPipeline, 60000);
+
+                cacheNodes.currentYearSpan.textContent = new Date().getFullYear();
+            }
+
+            // --- Data Pipeline Feed Aggregator Node ---
+            async function syncDataPipeline() {
+                try {
+                    showToast('Asynchronous Feed: Synchronizing with CoinGecko network node...', 'info');
+
+                    // Execute parallel promises to eliminate API blocking
+                    const [marketRes, globalRes, trendingRes] = await Promise.all([
+                        fetch('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=50&page=1&sparkline=true&price_change_percentage=24h'),
+                        fetch('https://api.coingecko.com/api/v3/global'),
+                        fetch('https://api.coingecko.com/api/v3/search/trending')
+                    ]);
+
+                    if (!marketRes.ok || !globalRes.ok || !trendingRes.ok) throw new Error("API Tier Limitation or Network Error.");
+
+                    APP_STATE.marketData = await marketRes.json();
+                    const globalRaw = await globalRes.json();
+                    APP_STATE.globalStats = globalRaw.data;
+                    const trendingRaw = await trendingRes.json();
+                    APP_STATE.trendingData = trendingRaw.coins;
+
+                    // Optional secondary fetch for the Fear & Greed index
+                    try {
+                        const fgRes = await fetch('https://api.alternative.me/fng/');
+                        if (fgRes.ok) {
+                            const fgData = await fgRes.json();
+                            APP_STATE.fearGreed = fgData.data[0];
+                        }
+                    } catch (e) { console.warn("Fear/Greed endpoint down. Failing over to structural defaults.", e); }
+
+                    // Trigger systemic downstream renders
+                    renderGlobalDashboardComponents();
+                    showToast('System Telemetry Refreshed Successfully.', 'success');
+                } catch (error) {
+                    console.error("Data ingestion failure:", error);
+                    showToast('API Connection Throttle Active. Utilizing Cached Profiles.', 'warning');
+                    if (APP_STATE.marketData.length === 0) seedFallbackMockData();
+                    renderGlobalDashboardComponents();
+                }
+            }
+
+            // --- Real-Time Content Rendering Processors ---
+            function renderGlobalDashboardComponents() {
+                renderMacroStats();
+                renderPriceTicker();
+                renderMainMarketTable();
+                renderTrendingWidget();
+                renderGainersLosersWidget();
+                renderPortfolioModule();
+                renderWatchlistModule();
+                renderMarketTerminalView();
+                rebuildCharts();
+                populatePortfolioAssetDropdown();
+            }
+
+            function renderMacroStats() {
+                const stats = APP_STATE.globalStats;
+                document.getElementById('stat-market-cap').textContent = formatCurrency(stats.total_market_cap?.usd || 0);
+
+                const mcChangeNode = document.getElementById('stat-market-cap-change');
+                const changeVal = stats.market_cap_change_percentage_24h_usd || 0;
+                mcChangeNode.textContent = `${changeVal >= 0 ? '+' : ''}${changeVal.toFixed(2)}%`;
+                mcChangeNode.className = `text-xs fw-bold ${changeVal >= 0 ? 'text-success' : 'text-danger'}`;
+
+                document.getElementById('stat-volume').textContent = formatCurrency(stats.total_volume?.usd || 0);
+                document.getElementById('stat-btc-dominance').textContent = `${(stats.market_cap_percentage?.btc || 0).toFixed(1)}%`;
+
+                if (APP_STATE.fearGreed) {
+                    document.getElementById('stat-fear-greed').textContent = APP_STATE.fearGreed.value;
+                    const labelNode = document.getElementById('stat-fear-greed-label');
+                    labelNode.textContent = APP_STATE.fearGreed.value_classification;
+                    if (APP_STATE.fearGreed.value > 65) labelNode.className = "text-xs fw-bold text-success";
+                    else if (APP_STATE.fearGreed.value < 35) labelNode.className = "text-xs fw-bold text-danger";
+                    else labelNode.className = "text-xs fw-bold text-warning";
+                }
+
+                // Remove structural loading skeletons across cards
+                document.querySelectorAll('#stats-container .skeleton-card').forEach(el => el.classList.remove('skeleton-card'));
+            }
+
+            function renderPriceTicker() {
+                const targetCoins = ['btc', 'eth', 'bnb', 'xrp', 'sol', 'doge'];
+                const filtered = APP_STATE.marketData.filter(c => targetCoins.includes(c.symbol.toLowerCase()));
+
+                let tickerHtml = "";
+                const streamingSet = [...filtered, ...filtered, ...filtered];
+
+                streamingSet.forEach(coin => {
+                    const pct = coin.price_change_percentage_24h || 0;
+                    tickerHtml += `
+                <div class="d-inline-flex align-items-center mx-3 cursor-pointer text-sm text-light-strong" onclick="window.dispatchDisplayModal('${coin.id}')">
+                    <img src="${coin.image}" class="asset-logo me-2" style="width:16px;height:16px;">
+                    <span class="fw-bold text-uppercase me-1">${coin.symbol}</span>
+                    <span class="me-2 font-monospace">${formatCurrency(coin.current_price)}</span>
+                    <span class="${pct >= 0 ? 'text-success' : 'text-danger'} fw-bold text-xs">
+                        <i class="fa-solid fa-caret-${pct >= 0 ? 'up' : 'down'} me-0.5"></i>${Math.abs(pct).toFixed(2)}%
+                    </span>
+                </div>
+                <div class="text-muted-strong opacity-25">|</div>
+            `;
+                });
+                cacheNodes.ticker.innerHTML = tickerHtml || `<span class="text-xs text-muted-strong">Streaming Node Overloaded. Re-indexing live streams...</span>`;
+            }
+
+            function renderMainMarketTable() {
+                let filtered = [...APP_STATE.marketData].slice(0, 20);
+
+                if (APP_STATE.searchQuery) {
+                    filtered = APP_STATE.marketData.filter(c =>
+                        c.name.toLowerCase().includes(APP_STATE.searchQuery.toLowerCase()) ||
+                        c.symbol.toLowerCase().includes(APP_STATE.searchQuery.toLowerCase())
+                    );
+                }
+
+                filtered.sort((a, b) => {
+                    let valA = a[APP_STATE.sortKey];
+                    let valB = b[APP_STATE.sortKey];
+
+                    if (APP_STATE.sortKey === 'price') { valA = a.current_price; valB = b.current_price; }
+                    if (APP_STATE.sortKey === 'change') { valA = a.price_change_percentage_24h; valB = b.price_change_percentage_24h; }
+
+                    if (valA < valB) return APP_STATE.sortDirection === 'asc' ? -1 : 1;
+                    if (valA > valB) return APP_STATE.sortDirection === 'asc' ? 1 : -1;
+                    return 0;
+                });
+
+                if (filtered.length === 0) {
+                    cacheNodes.marketTableBody.innerHTML = `<tr><td colspan="7" class="text-center py-4 text-muted-strong text-xs fw-bold">No matching financial instruments identified.</td></tr>`;
+                    return;
+                }
+
+                cacheNodes.marketTableBody.innerHTML = filtered.map(coin => {
+                    const isStarred = APP_STATE.watchlist.includes(coin.id);
+                    const change = coin.price_change_percentage_24h || 0;
+                    return `
+                <tr onclick="window.handleRowClickEvent(event, '${coin.id}')" class="cursor-pointer">
+                    <td class="text-center text-xs text-muted-strong fw-bold">${coin.market_cap_rank || '--'}</td>
+                    <td>
+                        <div class="d-flex align-items-center gap-2.5">
+                            <img src="${coin.image}" class="asset-logo" alt="${coin.name}">
+                            <div>
+                                <span class="fw-bold d-block text-sm text-light-strong">${coin.name}</span>
+                                <span class="text-xs text-muted-strong text-uppercase fw-bold">${coin.symbol}</span>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="text-end fw-bold text-sm font-monospace">${formatCurrency(coin.current_price)}</td>
+                    <td class="text-end fw-bold text-sm font-monospace ${change >= 0 ? 'text-success' : 'text-danger'}">
+                        ${change >= 0 ? '+' : ''}${change.toFixed(2)}%
+                    </td>
+                    <td class="text-end d-none d-md-table-cell text-xs fw-bold text-light-strong">${formatCurrency(coin.market_cap)}</td>
+                    <td class="text-end d-none d-lg-table-cell text-xs fw-bold text-light-strong">${formatCurrency(coin.total_volume)}</td>
+                    <td class="text-center">
+                        <button class="btn btn-sm border-0 p-1 text-xs" onclick="window.toggleAssetWatchlist(event, '${coin.id}')">
+                            <i class="${isStarred ? 'fa-solid text-warning' : 'fa-regular text-muted-strong'} fa-star fs-5"></i>
+                        </button>
+                    </td>
+                </tr>
+            `;
+                }).join('');
+            }
+
+            function renderTrendingWidget() {
+                const topTrending = APP_STATE.trendingData.slice(0, 5);
+                cacheNodes.trendingContainer.innerHTML = topTrending.map(item => {
+                    const coin = item.item;
+                    return `
+                <div class="d-flex align-items-center justify-content-between p-2 rounded-3 bg-body-hover transition-all cursor-pointer" onclick="window.dispatchDisplayModal('${coin.id}')">
+                    <div class="d-flex align-items-center gap-2">
+                        <img src="${coin.small}" class="asset-logo" style="width:22px;height:22px;">
+                        <div>
+                            <span class="text-xs fw-bold text-light-strong d-block">${coin.name}</span>
+                            <span class="text-muted-strong text-uppercase fw-bold" style="font-size:0.65rem;">${coin.symbol}</span>
+                        </div>
+                    </div>
+                    <div class="text-end">
+                        <span class="badge bg-primary text-white rounded-pill text-xs px-2.5 fw-bold">Rank #${coin.market_cap_rank || 'N/A'}</span>
+                    </div>
+                </div>
+            `;
+                }).join('');
+            }
+
+            function renderGainersLosersWidget() {
+                const sorted = [...APP_STATE.marketData].filter(c => c.price_change_percentage_24h !== null);
+                const gainers = [...sorted].sort((a, b) => b.price_change_percentage_24h - a.price_change_percentage_24h).slice(0, 5);
+                const losers = [...sorted].sort((a, b) => a.price_change_percentage_24h - b.price_change_percentage_24h).slice(0, 5);
+
+                const mapper = (coin) => `
+            <div class="d-flex align-items-center justify-content-between p-2 rounded-2 bg-body-inner text-xs cursor-pointer" onclick="window.dispatchDisplayModal('${coin.id}')">
+                <div class="d-flex align-items-center gap-2">
+                    <img src="${coin.image}" class="asset-logo" style="width:18px;height:18px;">
+                    <span class="fw-bold text-light-strong text-uppercase">${coin.symbol}</span>
+                </div>
+                <div class="text-end">
+                    <span class="d-block fw-bold text-light-strong font-monospace">${formatCurrency(coin.current_price)}</span>
+                    <span class="fw-bold ${coin.price_change_percentage_24h >= 0 ? 'text-success' : 'text-danger'}">
+                        ${coin.price_change_percentage_24h >= 0 ? '+' : ''}${coin.price_change_percentage_24h.toFixed(2)}%
+                    </span>
+                </div>
+            </div>
+        `;
+
+                cacheNodes.gainersList.innerHTML = gainers.map(mapper).join('') || `<div class="text-xs text-muted-strong text-center py-2">No data available</div>`;
+                cacheNodes.losersList.innerHTML = losers.map(mapper).join('') || `<div class="text-xs text-muted-strong text-center py-2">No data available</div>`;
+            }
+
+            function renderMarketTerminalView() {
+                let datasets = [...APP_STATE.marketData];
+                if (APP_STATE.searchQuery) {
+                    datasets = datasets.filter(c => c.name.toLowerCase().includes(APP_STATE.searchQuery.toLowerCase()) || c.symbol.toLowerCase().includes(APP_STATE.searchQuery.toLowerCase()));
+                }
+
+                cacheNodes.marketTerminalContainer.innerHTML = `
+            <div class="row g-3">
+                ${datasets.map(coin => {
+                    const pct = coin.price_change_percentage_24h || 0;
+                    return `
+                        <div class="col-12 col-md-6 col-xxl-4 animate-fade">
+                            <div class="p-3 bg-body rounded-3 border border-secondary-subtle d-flex align-items-center justify-content-between cursor-pointer hover-card" onclick="window.dispatchDisplayModal('${coin.id}')">
+                                <div class="d-flex align-items-center gap-3">
+                                    <img src="${coin.image}" class="asset-logo" style="width:32px;height:32px;">
+                                    <div>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <h6 class="m-0 fw-bold text-light-strong">${coin.symbol.toUpperCase()}</h6>
+                                            <span class="text-muted-strong text-xs fw-bold">${coin.name}</span>
+                                        </div>
+                                        <span class="text-xs text-muted-strong fw-medium">Cap: ${formatCurrency(coin.market_cap)}</span>
+                                    </div>
+                                </div>
+                                <div class="text-end">
+                                    <span class="d-block fw-bold text-sm text-light-strong font-monospace">${formatCurrency(coin.current_price)}</span>
+                                    <span class="text-xs fw-bold ${pct >= 0 ? 'text-success' : 'text-danger'}">${pct >= 0 ? '+' : ''}${pct.toFixed(2)}%</span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('')}
+            </div>
+        `;
+            }
+
+            function populatePortfolioAssetDropdown() {
+                if (APP_STATE.marketData.length === 0) return;
+                const currentSelection = cacheNodes.portfolioCoinSelect.value;
+
+                let optionsHtml = `<option value="" disabled ${!currentSelection ? 'selected' : ''}>-- Select Asset Matrix --</option>`;
+                optionsHtml += APP_STATE.marketData.map(c => `<option value="${c.id}" ${currentSelection === c.id ? 'selected' : ''}>${c.name} (${c.symbol.toUpperCase()})</option>`).join('');
+                cacheNodes.portfolioCoinSelect.innerHTML = optionsHtml;
+            }
+
+            function renderPortfolioModule() {
+                if (APP_STATE.portfolio.length === 0) {
+                    cacheNodes.portfolioTableBody.innerHTML = `<tr><td colspan="7" class="text-center py-4 text-muted-strong text-xs fw-bold">No active asset allocations registered.</td></tr>`;
+                    cacheNodes.portfolioTotalValue.textContent = "$0.00";
+                    cacheNodes.portfolioTotalPnl.textContent = "$0.00 (0.00%)";
+                    cacheNodes.portfolioTotalPnl.className = "h4 fw-bold m-0 text-muted-strong";
+                    return;
+                }
+
+                let totalHoldingsValue = 0;
+                let totalInvestmentCost = 0;
+
+                let tableRowsHtml = APP_STATE.portfolio.map((item, index) => {
+                    const activeCoin = APP_STATE.marketData.find(c => c.id === item.id) || {
+                        current_price: item.buyPrice,
+                        image: 'https://assets.coingecko.com/coins/images/1/large/bitcoin.png',
+                        name: item.id,
+                        symbol: item.id
+                    };
+
+                    const currentVal = activeCoin.current_price * item.quantity;
+                    const absoluteCost = item.buyPrice * item.quantity;
+                    const positionPnl = currentVal - absoluteCost;
+                    const positionPnlPct = absoluteCost > 0 ? (positionPnl / absoluteCost) * 100 : 0;
+
+                    totalHoldingsValue += currentVal;
+                    totalInvestmentCost += absoluteCost;
+
+                    return `
+                <tr>
+                    <td>
+                        <div class="d-flex align-items-center gap-2">
+                            <img src="${activeCoin.image}" class="asset-logo" style="width:20px;height:20px;">
+                            <div>
+                                <span class="fw-bold d-block text-xs text-light-strong">${activeCoin.name}</span>
+                                <span class="text-muted-strong text-uppercase fw-bold" style="font-size:0.65rem;">${activeCoin.symbol}</span>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="text-end fw-bold text-xs text-light-strong font-monospace">${item.quantity.toLocaleString(undefined, { maximumFractionDigits: 8 })}</td>
+                    <td class="text-end text-xs text-light-strong font-monospace">${formatCurrency(item.buyPrice)}</td>
+                    <td class="text-end text-xs fw-bold text-light-strong font-monospace">${formatCurrency(activeCoin.current_price)}</td>
+                    <td class="text-end fw-bold text-xs text-primary font-monospace">${formatCurrency(currentVal)}</td>
+                    <td class="text-end text-xs fw-bold font-monospace ${positionPnl >= 0 ? 'text-success' : 'text-danger'}">
+                        ${positionPnl >= 0 ? '+' : ''}${formatCurrency(positionPnl)} (${positionPnlPct.toFixed(2)}%)
+                    </td>
+                    <td class="text-center">
+                        <button class="btn btn-sm btn-outline-danger border-0 p-1 text-xs" onclick="window.purgePortfolioAsset(event, ${index})">
+                            <i class="fa-regular fa-trash-can fs-6"></i>
+                        </button>
+                    </td>
+                </tr>
+            `;
+                }).join('');
+
+                cacheNodes.portfolioTableBody.innerHTML = tableRowsHtml;
+                cacheNodes.portfolioTotalValue.textContent = formatCurrency(totalHoldingsValue);
+
+                const globalPnl = totalHoldingsValue - totalInvestmentCost;
+                const globalPnlPct = totalInvestmentCost > 0 ? (globalPnl / totalInvestmentCost) * 100 : 0;
+
+                cacheNodes.portfolioTotalPnl.textContent = `${globalPnl >= 0 ? '+' : ''}${formatCurrency(globalPnl)} (${globalPnlPct.toFixed(2)}%)`;
+                cacheNodes.portfolioTotalPnl.className = `h4 fw-bold m-0 ${globalPnl >= 0 ? 'text-success' : 'text-danger'}`;
+            }
+
+            window.purgePortfolioAsset = function (event, index) {
+                event.stopPropagation();
+                APP_STATE.portfolio.splice(index, 1);
+                localStorage.setItem('apex-portfolio', JSON.stringify(APP_STATE.portfolio));
+                renderPortfolioModule();
+                showToast(`Purged target execution frame from database.`, 'danger');
+            };
+
+            function renderWatchlistModule() {
+                const trackedItems = APP_STATE.marketData.filter(c => APP_STATE.watchlist.includes(c.id));
+
+                if (trackedItems.length === 0) {
+                    cacheNodes.watchlistContainer.innerHTML = `
+                <div class="col-12 text-center py-5 text-muted-strong text-xs fw-bold">
+                    <i class="fa-regular fa-star d-block fs-2 mb-2 text-secondary-subtle"></i>
+                    No custom indices tracked.
+                </div>`;
+                    return;
+                }
+
+                cacheNodes.watchlistContainer.innerHTML = trackedItems.map(coin => {
+                    const pct = coin.price_change_percentage_24h || 0;
+                    return `
+                <div class="col-12 col-md-6 col-lg-4 col-xxl-3 animate-fade">
+                    <div class="card bg-body border-0 p-3 shadow-sm position-relative cursor-pointer hover-card" onclick="window.dispatchDisplayModal('${coin.id}')">
+                        <button class="btn p-0 border-0 position-absolute end-0 top-0 mt-2.5 me-2.5 z-2 text-warning text-xs" onclick="window.toggleAssetWatchlist(event, '${coin.id}')">
+                            <i class="fa-solid fa-star fs-5"></i>
+                        </button>
+                        <div class="d-flex align-items-center gap-2.5 mb-2">
+                            <img src="${coin.image}" class="asset-logo" style="width:24px;height:24px;">
+                            <div>
+                                <span class="fw-bold text-sm d-block text-uppercase text-light-strong">${coin.symbol}/USD</span>
+                                <span class="text-muted-strong text-xs fw-bold">${coin.name}</span>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center justify-content-between pt-1">
+                            <span class="h6 m-0 fw-bold text-light-strong font-monospace">${formatCurrency(coin.current_price)}</span>
+                            <span class="text-xs fw-bold ${pct >= 0 ? 'text-success' : 'text-danger'}">
+                                ${pct >= 0 ? '+' : ''}${pct.toFixed(2)}%
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            `;
+                }).join('');
+            }
+
+            window.toggleAssetWatchlist = function (event, assetId) {
+                event.stopPropagation();
+                const index = APP_STATE.watchlist.indexOf(assetId);
+                if (index > -1) {
+                    APP_STATE.watchlist.splice(index, 1);
+                    showToast(`${assetId.toUpperCase()} dropped from watch vectors.`, 'warning');
+                } else {
+                    APP_STATE.watchlist.push(assetId);
+                    showToast(`${assetId.toUpperCase()} locked into live track pipelines.`, 'success');
+                }
+                localStorage.setItem('apex-watchlist', JSON.stringify(APP_STATE.watchlist));
+                renderMainMarketTable();
+                renderWatchlistModule();
+            };
+
+            window.handleRowClickEvent = function (event, id) {
+                if (event.target.closest('button') || event.target.closest('i')) return;
+                window.dispatchDisplayModal(id);
+            };
+
+            window.dispatchDisplayModal = async function (id) {
+                cacheNodes.modalHeaderProfile.innerHTML = `
+            <div class="spinner-border spinner-border-sm text-primary" role="status"></div>
+            <span class="text-muted-strong text-xs fw-bold">Handshaking remote node servers...</span>`;
+                cacheNodes.modalDetailsBody.innerHTML = `<div class="text-center py-5"><div class="spinner-border text-primary" role="status"></div></div>`;
+                cacheNodes.cryptoModal.show();
+
+                try {
+                    const res = await fetch(`https://api.coingecko.com/api/v3/coins/${id}?localization=false&tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=false`);
+                    if (!res.ok) throw new Error("Specification endpoint returned validation fault.");
+                    const data = await res.json();
+
+                    cacheNodes.modalHeaderProfile.innerHTML = `
+                <img src="${data.image.small}" class="asset-logo" style="width:28px;height:28px;">
+                <h5 class="modal-title fw-bold text-light-strong m-0" id="cryptoDetailsModalLabel">${data.name} <span class="text-muted-strong text-uppercase text-xs">(${data.symbol})</span></h5>
+            `;
+
+                    const mData = data.market_data;
+                    cacheNodes.modalDetailsBody.innerHTML = `
+                <div class="row g-3 mb-4">
+                    <div class="col-6 col-md-4">
+                        <span class="text-xs text-muted-strong block text-uppercase fw-bold">Mark Price</span>
+                        <div class="h5 fw-bold text-primary m-0 font-monospace">${formatCurrency(mData.current_price.usd)}</div>
+                    </div>
+                    <div class="col-6 col-md-4">
+                        <span class="text-xs text-muted-strong block text-uppercase fw-bold">24h Variance Delta</span>
+                        <div class="h5 fw-bold m-0 font-monospace ${mData.price_change_percentage_24h >= 0 ? 'text-success' : 'text-danger'}">
+                            ${mData.price_change_percentage_24h?.toFixed(2)}%
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-4">
+                        <span class="text-xs text-muted-strong block text-uppercase fw-bold">Capitalization Weight</span>
+                        <div class="h6 fw-bold text-light-strong m-0 font-monospace">${formatCurrency(mData.market_cap.usd)}</div>
+                    </div>
+                </div>
+                <hr class="text-muted separator-line">
+                <div class="row g-3 text-xs mb-4 text-light-strong">
+                    <div class="col-6 col-sm-4"><strong>24h Trade Vol:</strong> <span class="text-muted-strong font-monospace">${formatCurrency(mData.total_volume.usd)}</span></div>
+                    <div class="col-6 col-sm-4"><strong>Circulating Vol:</strong> <span class="text-muted-strong font-monospace">${mData.circulating_supply?.toLocaleString()}</span></div>
+                    <div class="col-6 col-sm-4"><strong>Max Supply Index:</strong> <span class="text-muted-strong font-monospace">${mData.max_supply ? mData.max_supply.toLocaleString() : 'Infinite'}</span></div>
+                    <div class="col-6 col-sm-4"><strong>All-Time High (ATH):</strong> <span class="text-success fw-bold font-monospace">${formatCurrency(mData.ath.usd)}</span></div>
+                    <div class="col-6 col-sm-4"><strong>All-Time Low (ATL):</strong> <span class="text-danger fw-bold font-monospace">${formatCurrency(mData.atl.usd)}</span></div>
+                </div>
+                <div class="bg-body p-3 rounded-3 border border-secondary-subtle">
+                    <h6 class="text-xs fw-bold text-uppercase mb-2 text-primary">Asset Profile Overview</h6>
+                    <p class="text-xs text-light-strong m-0 lh-base" style="max-height: 160px; overflow-y: auto;">
+                        ${data.description.en ? data.description.en : 'No institutional profile bio uploaded for this decentralized token registry asset node.'}
+                    </p>
+                </div>
+            `;
+                } catch (err) {
+                    console.error(err);
+                    const fallbackCoin = APP_STATE.marketData.find(c => c.id === id);
+                    if (fallbackCoin) {
+                        cacheNodes.modalHeaderProfile.innerHTML = `<img src="${fallbackCoin.image}" class="asset-logo" width="24"> <h5 class="m-0 text-light-strong">${fallbackCoin.name}</h5>`;
+                        cacheNodes.modalDetailsBody.innerHTML = `<div class="p-2 text-xs text-light-strong"><strong>Price:</strong> ${formatCurrency(fallbackCoin.current_price)}<br><strong>Market Cap:</strong> ${formatCurrency(fallbackCoin.market_cap)}<br><span class="text-muted-strong">Extended details restricted due to structural throttling.</span></div>`;
+                    } else {
+                        cacheNodes.modalDetailsBody.innerHTML = `<div class="alert alert-danger text-xs m-0 fw-bold">Failed to establish safe socket connection to asset matrix.</div>`;
+                    }
+                }
+            };
+
+            function rebuildCharts() {
+                if (APP_STATE.marketData.length === 0) return;
+
+                const topTokens = APP_STATE.marketData.slice(0, 5);
+                const lineLabels = ['7d Ago', '5d Ago', '3d Ago', '2d Ago', '1d Ago', 'Current'];
+                const labelTextColor = APP_STATE.theme === 'dark' ? '#cbd5e1' : '#475569';
+                const gridColor = APP_STATE.theme === 'dark' ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)';
+
+                const datasets = topTokens.map((coin, index) => {
+                    const currentPrice = coin.current_price;
+                    const deviation = currentPrice * ((coin.price_change_percentage_24h || 0) / 100);
+                    const basePrice = currentPrice - deviation;
+                    const colorPalette = ['#2563eb', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'];
+                    const activeColor = colorPalette[index % colorPalette.length];
+
+                    return {
+                        label: coin.symbol.toUpperCase(),
+                        data: [basePrice * 0.96, basePrice * 1.02, basePrice * 0.99, basePrice * 1.015, basePrice, currentPrice],
+                        borderColor: activeColor,
+                        backgroundColor: 'transparent',
+                        borderWidth: 2.5,
+                        tension: 0.4,
+                        pointRadius: 1
+                    };
+                });
+
+                if (lineChartInstance) lineChartInstance.destroy();
+                const ctxLine = document.getElementById('lineChartProjections').getContext('2d');
+                lineChartInstance = new Chart(ctxLine, {
+                    type: 'line',
+                    data: { labels: lineLabels, datasets: datasets },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: true, labels: { color: labelTextColor, font: { family: 'Poppins', size: 10, weight: '600' } } } },
+                        scales: {
+                            x: { grid: { display: false }, ticks: { color: labelTextColor, font: { size: 9, weight: '500' } } },
+                            y: { grid: { color: gridColor }, ticks: { color: labelTextColor, font: { size: 9, weight: '500' } } }
+                        }
+                    }
+                });
+
+                const topFour = APP_STATE.marketData.slice(0, 4);
+                const topFourCap = topFour.reduce((sum, c) => sum + c.market_cap, 0);
+                const totalMarketCap = APP_STATE.globalStats.total_market_cap?.usd || topFourCap * 1.3;
+                const remainderCap = totalMarketCap - topFourCap;
+
+                if (doughnutChartInstance) doughnutChartInstance.destroy();
+                const ctxDoughnut = document.getElementById('doughnutDominance').getContext('2d');
+                doughnutChartInstance = new Chart(ctxDoughnut, {
+                    type: 'doughnut',
+                    data: {
+                        labels: [...topFour.map(c => c.symbol.toUpperCase()), 'OTHERS'],
+                        datasets: [{
+                            data: [...topFour.map(c => c.market_cap), remainderCap],
+                            backgroundColor: ['#2563eb', '#10b981', '#f59e0b', '#ef4444', '#64748b'],
+                            borderWidth: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { position: 'bottom', labels: { color: labelTextColor, font: { family: 'Poppins', size: 10, weight: '600' }, padding: 10 } } },
+                        cutout: '70%'
+                    }
+                });
+            }
+
+            function bindEvents() {
+                cacheNodes.sidebarToggle.addEventListener('click', () => cacheNodes.sidebar.classList.add('open'));
+                cacheNodes.sidebarClose.addEventListener('click', () => cacheNodes.sidebar.classList.remove('open'));
+
+                cacheNodes.sidebarMenu.addEventListener('click', (e) => {
+                    const link = e.target.closest('a');
+                    if (!link) return;
+                    e.preventDefault();
+
+                    cacheNodes.sidebarMenu.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
+                    link.classList.add('active');
+
+                    const routeTarget = link.getAttribute('data-target');
+                    APP_STATE.activeView = routeTarget;
+
+                    document.querySelectorAll('.view-section').forEach(section => {
+                        if (section.id === routeTarget) section.classList.remove('d-none');
+                        else section.classList.add('d-none');
+                    });
+
+                    cacheNodes.sidebar.classList.remove('open');
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                });
+
+                cacheNodes.themeToggle.addEventListener('click', () => {
+                    APP_STATE.theme = APP_STATE.theme === 'dark' ? 'light' : 'dark';
+                    setupTheme();
+                    rebuildCharts();
+                });
+
+                cacheNodes.refreshMarketsBtn.addEventListener('click', syncDataPipeline);
+
+                const executeDebouncedSearch = debounce((query) => {
+                    APP_STATE.searchQuery = query;
+                    renderMainMarketTable();
+                    renderMarketTerminalView();
+                }, 250);
+
+                cacheNodes.globalSearch.addEventListener('input', (e) => {
+                    cacheNodes.marketSearch.value = e.target.value;
+                    executeDebouncedSearch(e.target.value);
+                });
+
+                cacheNodes.marketSearch.addEventListener('input', (e) => {
+                    cacheNodes.globalSearch.value = e.target.value;
+                    executeDebouncedSearch(e.target.value);
+                });
+
+                // Portfolio
+                cacheNodes.portfolioForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    const coinId = cacheNodes.portfolioCoinSelect.value;
+                    const qty = parseFloat(cacheNodes.portfolioQty.value);
+                    const price = parseFloat(cacheNodes.portfolioPrice.value);
+
+                    if (!coinId || isNaN(qty) || isNaN(price)) return;
+
+                    const existingIdx = APP_STATE.portfolio.findIndex(item => item.id === coinId);
+                    if (existingIdx > -1) {
+                        const existing = APP_STATE.portfolio[existingIdx];
+                        const aggregateQty = existing.quantity + qty;
+                        existing.buyPrice = ((existing.buyPrice * existing.quantity) + (price * qty)) / aggregateQty;
+                        existing.quantity = aggregateQty;
+                    } else {
+                        APP_STATE.portfolio.push({ id: coinId, quantity: qty, buyPrice: price });
+                    }
+
+                    localStorage.setItem('apex-portfolio', JSON.stringify(APP_STATE.portfolio));
+                    renderPortfolioModule();
+                    cacheNodes.portfolioForm.reset();
+                    showToast(`Asset balances updated in local storage ledger.`, 'success');
+                });
+
+                document.querySelectorAll('th[data-sort]').forEach(th => {
+                    th.addEventListener('click', () => {
+                        const targetKey = th.getAttribute('data-sort');
+                        if (APP_STATE.sortKey === targetKey) {
+                            APP_STATE.sortDirection = APP_STATE.sortDirection === 'asc' ? 'desc' : 'asc';
+                        } else {
+                            APP_STATE.sortKey = targetKey;
+                            APP_STATE.sortDirection = 'asc';
+                        }
+                        renderMainMarketTable();
+                    });
+                });
+            }
+
+            // Global application states
+            let portfolioItems = JSON.parse(localStorage.getItem('apex_portfolio')) || [];
+            let liveCryptoDataCache = []; // Holds absolute market price fallbacks
+
+            /**
+             * Hook into your existing main API init loop.
+             * Call this function whenever your app pulls fresh data from CoinGecko.
+             */
+            function updatePortfolioMarketData(cryptoDataArray) {
+                if (!Array.isArray(cryptoDataArray) || cryptoDataArray.length === 0) return;
+
+                // Save reference in memory globally
+                liveCryptoDataCache = cryptoDataArray;
+
+                // Refresh UI Components cleanly
+                populatePortfolioDropdown(cryptoDataArray);
+                calculateAndRenderPortfolio();
+            }
+
+            /**
+             * 1. Populate the Asset Selection Options
+             */
+            function populatePortfolioDropdown(cryptoData) {
+                const coinSelect = document.getElementById('portfolio-coin');
+                if (!coinSelect) return;
+
+                // Retain initial configuration placeholder cleanly
+                coinSelect.innerHTML = '<option value="" disabled selected>-- Select Asset Matrix --</option>';
+
+                cryptoData.forEach(coin => {
+                    const option = document.createElement('option');
+                    option.value = coin.id;
+                    option.textContent = `${coin.name} (${coin.symbol.toUpperCase()})`;
+                    coinSelect.appendChild(option);
+                });
+            }
+
+            /**
+             * 2. Form Submission & Input Validation Node
+             */
+            document.addEventListener('DOMContentLoaded', () => {
+                const portfolioForm = document.getElementById('portfolio-form');
+
+                if (portfolioForm) {
+                    // Clear old event listener duplicates safely
+                    portfolioForm.removeAttribute('onsubmit');
+
+                    portfolioForm.addEventListener('submit', function (e) {
+                        e.preventDefault();
+
+                        const coinSelect = document.getElementById('portfolio-coin');
+                        const qtyInput = document.getElementById('portfolio-qty');
+                        const priceInput = document.getElementById('portfolio-price');
+
+                        if (!coinSelect || !qtyInput || !priceInput) return;
+
+                        const coinId = coinSelect.value;
+                        const quantity = parseFloat(qtyInput.value);
+                        const buyPrice = parseFloat(priceInput.value);
+
+                        // Halt transaction on structural input failures
+                        if (!coinId || isNaN(quantity) || quantity <= 0 || isNaN(buyPrice) || buyPrice <= 0) {
+                            alert("Execution Halted: Provide non-zero values and select an active asset.");
+                            return;
+                        }
+
+                        // Find matching data profile in memory cache or create robust asset profile on-the-fly
+                        let targetAsset = liveCryptoDataCache.find(c => c.id === coinId);
+
+                        if (!targetAsset) {
+                            // Highly stable fallback logic to ensure calculation never fails
+                            const selectedText = coinSelect.options[coinSelect.selectedIndex].text;
+                            const matches = selectedText.match(/(.*)\s\((.*)\)/);
+                            targetAsset = {
+                                id: coinId,
+                                name: matches ? matches[1] : coinId,
+                                symbol: matches ? matches[2] : 'CRYPTO',
+                                image: 'https://cdn-icons-png.flaticon.com/512/2272/2272825.png', // Generic Token asset fallback
+                                current_price: buyPrice
+                            };
+                        }
+
+                        // Construct transaction model schema matching database structures
+                        const newPosition = {
+                            id: coinId,
+                            name: targetAsset.name,
+                            symbol: targetAsset.symbol.toUpperCase(),
+                            image: targetAsset.image || 'https://cdn-icons-png.flaticon.com/512/2272/2272825.png',
+                            quantity: quantity,
+                            buyPrice: buyPrice
+                        };
+
+                        // Merge if duplicating exact token allocation profile
+                        const existingIndex = portfolioItems.findIndex(item => item.id === coinId);
+                        if (existingIndex > -1) {
+                            const totalQty = portfolioItems[existingIndex].quantity + quantity;
+                            const totalCost = (portfolioItems[existingIndex].quantity * portfolioItems[existingIndex].buyPrice) + (quantity * buyPrice);
+                            portfolioItems[existingIndex].quantity = totalQty;
+                            portfolioItems[existingIndex].buyPrice = totalCost / totalQty; // Math Moving Weighted Cost Basis Avg
+                        } else {
+                            portfolioItems.push(newPosition);
+                        }
+
+                        // Save variables to the browser cache storage safely
+                        localStorage.setItem('apex_portfolio', JSON.stringify(portfolioItems));
+
+                        // Execute recalculation parameters instantly
+                        calculateAndRenderPortfolio();
+
+                        // Reset input values smoothly
+                        portfolioForm.reset();
+                    });
+                }
+            });
+
+            /**
+             * 3. Primary Mathematics Engine: NAV Matrix Dynamic Calculations
+             */
+            function calculateAndRenderPortfolio() {
+                const tableBody = document.getElementById('portfolioTableBody');
+                const totalValueEl = document.getElementById('portfolio-total-value');
+                const totalPnlEl = document.getElementById('portfolio-total-pnl');
+
+                if (!tableBody) return;
+
+                if (!portfolioItems || portfolioItems.length === 0) {
+                    tableBody.innerHTML = `<tr><td colspan="7" class="text-center py-4 text-muted-strong text-xs fw-medium">No active asset allocations registered.</td></tr>`;
+                    if (totalValueEl) totalValueEl.textContent = '$0.00';
+                    if (totalPnlEl) {
+                        totalPnlEl.textContent = '$0.00 (0.00%)';
+                        totalPnlEl.className = 'h4 fw-bold m-0 text-light-strong';
+                    }
+                    return;
+                }
+
+                let netAssetValue = 0;
+                let totalInvestmentCost = 0;
+                tableBody.innerHTML = '';
+
+                portfolioItems.forEach((item, index) => {
+                    // Cross-examine entry calculations against fresh live API targets
+                    const liveAsset = liveCryptoDataCache.find(c => c.id === item.id);
+                    const currentPrice = liveAsset ? liveAsset.current_price : item.buyPrice;
+
+                    const currentHoldingsValue = item.quantity * currentPrice;
+                    const historicalCostBasis = item.quantity * item.buyPrice;
+
+                    netAssetValue += currentHoldingsValue;
+                    totalInvestmentCost += historicalCostBasis;
+
+                    const positionPnlUsd = currentHoldingsValue - historicalCostBasis;
+                    const positionPnlPct = historicalCostBasis > 0 ? (positionPnlUsd / historicalCostBasis) * 100 : 0;
+
+                    const pnlColorClass = positionPnlUsd >= 0 ? 'text-success' : 'text-danger';
+                    const pnlSign = positionPnlUsd >= 0 ? '+' : '';
+
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+            <td>
+                <div class="d-flex align-items-center gap-2">
+                    <img src="${item.image}" class="asset-logo" width="24" height="24" alt="" onerror="this.src='https://cdn-icons-png.flaticon.com/512/2272/2272825.png'">
+                    <div>
+                        <span class="d-block fw-bold text-light-strong text-start">${item.name}</span>
+                        <span class="text-xs text-muted-strong text-uppercase d-block text-start">${item.symbol}</span>
+                    </div>
+                </div>
+            </td>
+            <td class="text-end font-monospace">${item.quantity.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 6 })}</td>
+            <td class="text-end font-monospace">$${item.buyPrice.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 4 })}</td>
+            <td class="text-end font-monospace">$${currentPrice.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 4 })}</td>
+            <td class="text-end font-monospace fw-bold">$${currentHoldingsValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+            <td class="text-end font-monospace ${pnlColorClass} fw-bold">
+                ${pnlSign}$${positionPnlUsd.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}<br>
+                <small class="text-xs">${pnlSign}${positionPnlPct.toFixed(2)}%</small>
+            </td>
+            <td class="text-center">
+                <button type="button" class="btn btn-sm p-1 text-danger border-0" onclick="deletePortfolioItem(${index})">
+                    <i class="fa-regular fa-trash-can"></i>
+                </button>
+            </td>
+        `;
+                    tableBody.appendChild(row);
+                });
+
+                // Global Aggregate Multipliers Calculation
+                const cumulativePnlUsd = netAssetValue - totalInvestmentCost;
+                const cumulativePnlPct = totalInvestmentCost > 0 ? (cumulativePnlUsd / totalInvestmentCost) * 100 : 0;
+                const globalPnlSign = cumulativePnlUsd >= 0 ? '+' : '';
+                const globalPnlColor = cumulativePnlUsd >= 0 ? 'text-success' : 'text-danger';
+
+                if (totalValueEl) totalValueEl.textContent = `$${netAssetValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+                if (totalPnlEl) {
+                    totalPnlEl.textContent = `${globalPnlSign}$${cumulativePnlUsd.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} (${globalPnlSign}${cumulativePnlPct.toFixed(2)}%)`;
+                    totalPnlEl.className = `h4 fw-bold m-0 ${globalPnlColor}`;
+                }
+            }
+
+            /**
+             * 4. Remove Position Allocations Smoothly
+             */
+            window.deletePortfolioItem = function (index) {
+                portfolioItems.splice(index, 1);
+                localStorage.setItem('apex_portfolio', JSON.stringify(portfolioItems));
+                calculateAndRenderPortfolio();
+            };
+
+            // Auto run rendering on initial script file parsing pipeline configuration
+            document.addEventListener('DOMContentLoaded', () => {
+                calculateAndRenderPortfolio();
+            }); //End
+
+            function setupTheme() {
+                document.documentElement.setAttribute('data-theme', APP_STATE.theme);
+                localStorage.setItem('apex-theme', APP_STATE.theme);
+
+                if (APP_STATE.theme === 'dark') {
+                    cacheNodes.themeIcon.className = "fa-solid fa-moon fs-5 text-light-strong";
+                    cacheNodes.themeText.textContent = "Dark Mode";
+                    cacheNodes.themeSwitch.checked = true;
+                } else {
+                    cacheNodes.themeIcon.className = "fa-solid fa-sun fs-5 text-light-strong";
+                    cacheNodes.themeText.textContent = "Light Mode";
+                    cacheNodes.themeSwitch.checked = false;
+                }
+            }
+
+            function initClock() {
+                const runClock = () => {
+                    const options = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true };
+                    cacheNodes.headerTime.textContent = new Date().toLocaleTimeString(undefined, options);
+                };
+                runClock();
+                setInterval(runClock, 1000);
+            }
+
+            function formatCurrency(val) {
+                if (isNaN(val) || val === null) return "$0.00";
+                if (val >= 1e9) return `$${(val / 1e9).toFixed(2)}B`;
+                if (val >= 1e6) return `$${(val / 1e6).toFixed(2)}M`;
+                return val.toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 6 });
+            }
+
+            function debounce(func, wait) {
+                let timeout;
+                return function (...args) {
+                    clearTimeout(timeout);
+                    timeout = setTimeout(() => func.apply(this, args), wait);
+                };
+            }
+
+            function showToast(message, colorType = 'info') {
+                const container = document.querySelector('.toast-container');
+                const toastId = `toast-${Date.now()}`;
+
+                let borderClass = 'bg-primary';
+                if (colorType === 'success') borderClass = 'bg-success';
+                if (colorType === 'warning') borderClass = 'bg-warning text-dark';
+                if (colorType === 'danger') borderClass = 'bg-danger';
+
+                const toastHtml = `
+            <div id="${toastId}" class="toast align-items-center text-white ${borderClass} border-0 shadow-lg" role="alert" data-bs-delay="4000">
+                <div class="d-flex">
+                    <div class="toast-body text-xs fw-bold">${message}</div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+            </div>
+        `;
+                container.insertAdjacentHTML('beforeend', toastHtml);
+                const toastNode = document.getElementById(toastId);
+                const bsToast = new bootstrap.Toast(toastNode);
+                bsToast.show();
+
+                toastNode.addEventListener('hidden.bs.toast', () => toastNode.remove());
+            }
+
+            function seedFallbackMockData() {
+                const seedKeys = [
+                    { id: 'bitcoin', name: 'Bitcoin', symbol: 'btc', current_price: 68500, market_cap: 1350000000000, price_change_percentage_24h: 3.4, market_cap_rank: 1, total_volume: 32000000000, image: 'https://assets.coingecko.com/coins/images/1/large/bitcoin.png' },
+                    { id: 'ethereum', name: 'Ethereum', symbol: 'eth', current_price: 3820, market_cap: 450000000000, price_change_percentage_24h: -1.8, market_cap_rank: 2, total_volume: 18000000000, image: 'https://assets.coingecko.com/coins/images/279/large/ethereum.png' },
+                    { id: 'binancecoin', name: 'BNB', symbol: 'bnb', current_price: 610, market_cap: 92000000000, price_change_percentage_24h: 0.8, market_cap_rank: 3, total_volume: 1400000000, image: 'https://assets.coingecko.com/coins/images/825/large/bnb-icon2_2x.png' },
+                    { id: 'solana', name: 'Solana', symbol: 'sol', current_price: 178, market_cap: 82000000000, price_change_percentage_24h: 8.2, market_cap_rank: 4, total_volume: 3900000000, image: 'https://assets.coingecko.com/coins/images/4128/large/solana.png' },
+                    { id: 'ripple', name: 'Ripple', symbol: 'xrp', current_price: 0.59, market_cap: 32000000000, price_change_percentage_24h: -0.2, market_cap_rank: 5, total_volume: 910000000, image: 'https://assets.coingecko.com/coins/images/44/large/xrp-symbol-white_-blue_2x.png' }
+                ];
+                APP_STATE.marketData = seedKeys;
+                APP_STATE.globalStats = { total_market_cap: { usd: 2680000000000 }, total_volume: { usd: 94000000000 }, market_cap_percentage: { btc: 50.3 }, market_cap_change_percentage_24h_usd: 2.1 };
+                APP_STATE.trendingData = [{ item: { id: 'solana', name: 'Solana', symbol: 'SOL', market_cap_rank: 4, small: 'https://assets.coingecko.com/coins/images/4128/large/solana.png' } }];
+            }
+
+            init();
+        });
+    </script>
+</body>
+
+</html>
