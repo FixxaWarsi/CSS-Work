@@ -1,0 +1,119 @@
+:root {
+    --bg-app: #f8fafc;
+    --sidebar-w: 260px;
+    --primary-color: #4f46e5;
+    --transition-speed: 0.3s;
+}
+
+[data-bs-theme="dark"] {
+    --bg-app: #0f172a;
+    --primary-color: #6366f1;
+}
+
+body {
+    background-color: var(--bg-app);
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    transition: background-color var(--transition-speed), color var(--transition-speed);
+    overflow-x: hidden;
+}
+
+/* Glassmorphism & Card styling */
+.glass-card {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    border-radius: 0.75rem;
+    transition: transform var(--transition-speed), box-shadow var(--transition-speed);
+}
+
+[data-bs-theme="dark"] .glass-card {
+    background: rgba(30, 41, 59, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.task-card {
+    cursor: grab;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.task-card:active {
+    cursor: grabbing;
+}
+
+.task-card.dragging {
+    opacity: 0.4;
+    transform: scale(0.95);
+}
+
+/* Column Dropzones */
+.kanban-column {
+    background-color: rgba(0, 0, 0, 0.02);
+    border: 2px dashed transparent;
+    border-radius: 1rem;
+    min-height: 500px;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+[data-bs-theme="dark"] .kanban-column {
+    background-color: rgba(255, 255, 255, 0.02);
+}
+
+.kanban-column.drag-over {
+    background-color: rgba(79, 70, 229, 0.05);
+    border-color: var(--primary-color);
+}
+
+/* Custom scrollbars */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.15);
+    border-radius: 10px;
+}
+
+[data-bs-theme="dark"] ::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+/* Overdue style */
+.overdue-badge {
+    background-color: #ef4444 !important;
+    color: white;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.6;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+/* Nav active pill customization */
+.nav-pills .nav-link.active {
+    background-color: var(--primary-color);
+}
+
+/* Toast positioning container */
+.toast-container {
+    position: fixed;
+    bottom: 1.5rem;
+    right: 1.5rem;
+    z-index: 1100;
+}
