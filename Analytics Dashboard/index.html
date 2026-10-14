@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PulseAnalytics - Team Analytics Dashboard</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- jsPDF CDN for PDF Export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="style.css">
+
+</head>
+<body>
+
+    <div class="app-container">
+        <div class="mobile-overlay" id="mobileOverlay"></div>
+        <!-- SIDEBAR -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <a href="javascript:void(0)" class="brand">
+                    <i class="fa-solid fa-bolt"></i>
+                    <span>PulseAnalytics</span>
+                </a>
+                <button class="toggle-sidebar-btn" id="sidebarToggleBtn" title="Toggle Sidebar">
+                    <i class="fa-solid fa-chevron-left"></i>
+                </button>
+            </div>
+            <ul class="sidebar-menu">
+                <li class="menu-item">
+                    <a class="menu-link active" data-view="overview">
+                        <i class="fa-solid fa-chart-pie"></i>
+                        <span>Overview</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a class="menu-link" data-view="team-performance">
+                        <i class="fa-solid fa-chart-line"></i>
+                        <span>Team Performance</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a class="menu-link" data-view="employees">
+                        <i class="fa-solid fa-users"></i>
+                        <span>Employees</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a class="menu-link" data-view="goals">
+                        <i class="fa-solid fa-bullseye"></i>
+                        <span>Goals & KPIs</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a class="menu-link" data-view="attendance">
+                        <i class="fa-solid fa-calendar-check"></i>
+                        <span>Attendance</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a class="menu-link" data-view="reports">
+                        <i class="fa-solid fa-file-invoice"></i>
+                        <span>Reports</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a class="menu-link" data-view="settings">
+                        <i class="fa-solid fa-gear"></i>
+                        <span>Settings</span>
+                    </a>
+                </li>
+            </ul>
+
+            <div class="sidebar-footer">
+                <div class="user-dropdown" id="userDropdown">
+                    <div class="user-dropdown-item" onclick="app.openModal('userProfileModal')">
+                        <i class="fa-solid fa-user"></i> My Profile
+                    </div>
+                    <div class="user-dropdown-item" onclick="app.navigateTo('settings')">
+                        <i class="fa-solid fa-gear"></i> Account Settings
+                    </div>
+                    <div class="user-dropdown-item" onclick="app.signOut()">
+                        <i class="fa-solid fa-right-from-bracket"></i> Sign Out
+                    </div>
+                </div>
+                <div class="user-profile" id="userProfileBtn">
+                    <img src="https://i.pravatar.cc/150?img=68" alt="User Avatar" class="avatar">
+                    <div class="user-info">
+                        <div class="user-name">Alex Morgan</div>
+                        <div class="user-role" id="currentUserRoleLabel">Admin</div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- MAIN WRAPPER -->
+        <div class="main-wrapper">
+            <!-- TOP HEADER -->
+            <header class="header">
+                <div class="header-left">
+                    <button class="mobile-toggle" id="mobileToggleBtn">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                    <div class="header-title-container">
+                        <h1 id="pageTitle">Overview</h1>
+                        <div class="breadcrumb">
+                            <span>Dashboard</span> <i class="fa-solid fa-chevron-right" style="font-size: 0.6rem;"></i>
+                            <span id="breadcrumbCurrent">Overview</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="header-right">
+                    <!-- Global Search -->
+                    <div class="search-box">
+                        <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                        <input type="text" class="search-input" id="globalSearchInput"
+                            placeholder="Search employees, KPIs...">
+                        <div class="search-results-dropdown" id="searchResultsDropdown"></div>
+                    </div>
+
+                    <!-- Role Switcher Pill -->
+                    <div class="role-selector-container">
+                        <i class="fa-solid fa-user-shield"
+                            style="font-size:0.8rem; margin-right:0.3rem; color:var(--text-muted)"></i>
+                        <select id="roleSelector">
+                            <option value="Admin">Admin</option>
+                            <option value="HR Manager">HR Manager</option>
+                            <option value="Department Manager">Dept Manager</option>
+                            <option value="Team Lead">Team Lead</option>
+                            <option value="Employee">Employee</option>
+                        </select>
+                    </div>
+
+                    <!-- Theme Toggle -->
+                    <button class="icon-btn" id="themeToggleBtn" title="Toggle Theme">
+                        <i class="fa-solid fa-moon"></i>
+                    </button>
+
+                    <!-- Notifications Dropdown Toggle -->
+                    <div style="position: relative;">
+                        <button class="icon-btn" id="notifBellBtn" title="Notifications">
+                            <i class="fa-solid fa-bell"></i>
+                            <span class="badge-dot" id="notifBadge"></span>
+                        </button>
+                        <div class="notification-dropdown" id="notificationDropdown">
+                            <div class="notification-header">
+                                <span>Notifications</span>
+                                <button class="mark-read-btn" onclick="app.markAllNotificationsRead()">Mark all
+                                    read</button>
+                            </div>
+                            <div class="notification-list" id="notificationList"></div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- DASHBOARD CONTENT AREA -->
+            <main class="content">
+
+                <!-- 1. OVERVIEW VIEW -->
+                <section id="overview-view" class="view-section active">
+                    <div class="page-hero">
+                        <div class="hero-text">
+                            <h2>Good morning, Alex</h2>
+                            <p>Here's what's happening across your team this week.</p>
+                        </div>
+                        <div class="hero-actions">
+                            <select class="date-picker-select" id="overviewDateRange">
+                                <option value="7">Last 7 Days</option>
+                                <option value="30" selected>Last 30 Days</option>
+                                <option value="90">Last 90 Days</option>
+                            </select>
+                            <button class="btn btn-secondary" onclick="app.openExportModal()"><i
+                                    class="fa-solid fa-download"></i> Export</button>
+                            <button class="btn btn-primary role-admin-hr" onclick="app.openModal('addEmployeeModal')"><i
+                                    class="fa-solid fa-plus"></i> Add Employee</button>
+                        </div>
+                    </div>
+
+                    <!-- KPI Cards -->
+                    <div class="kpi-grid">
+                        <div class="kpi-card">
+                            <div class="kpi-top">
+                                <span class="kpi-title">Total Employees</span>
+                                <div class="kpi-icon" style="background:var(--primary-light); color:var(--primary);"><i
+                                        class="fa-solid fa-users"></i></div>
+                            </div>
+                            <div class="kpi-value" id="kpiTotalEmployees">0</div>
+                            <div class="kpi-bottom">
+                                <span class="kpi-trend positive"><i class="fa-solid fa-arrow-up"></i> +12.5%</span>
+                                <span style="color:var(--text-muted)">vs last month</span>
+                            </div>
+                        </div>
+
+                        <div class="kpi-card">
+                            <div class="kpi-top">
+                                <span class="kpi-title">Avg. Performance</span>
+                                <div class="kpi-icon" style="background:var(--success-light); color:var(--success);"><i
+                                        class="fa-solid fa-chart-line"></i></div>
+                            </div>
+                            <div class="kpi-value" id="kpiAvgPerformance">0%</div>
+                            <div class="kpi-bottom">
+                                <span class="kpi-trend positive"><i class="fa-solid fa-arrow-up"></i> +4.8%</span>
+                                <span style="color:var(--text-muted)">vs last month</span>
+                            </div>
+                        </div>
+
+                        <div class="kpi-card">
+                            <div class="kpi-top">
+                                <span class="kpi-title">Goal Completion</span>
+                                <div class="kpi-icon" style="background:var(--warning-light); color:var(--warning);"><i
+                                        class="fa-solid fa-bullseye"></i></div>
+                            </div>
+                            <div class="kpi-value" id="kpiGoalCompletion">0%</div>
+                            <div class="kpi-bottom">
+                                <span class="kpi-trend positive"><i class="fa-solid fa-arrow-up"></i> +8.2%</span>
+                                <span style="color:var(--text-muted)">vs last month</span>
+                            </div>
+                        </div>
+
+                        <div class="kpi-card">
+                            <div class="kpi-top">
+                                <span class="kpi-title">Engagement Score</span>
+                                <div class="kpi-icon" style="background:var(--danger-light); color:var(--danger);"><i
+                                        class="fa-solid fa-heart"></i></div>
+                            </div>
+                            <div class="kpi-value" id="kpiEngagement">0%</div>
+                            <div class="kpi-bottom">
+                                <span class="kpi-trend negative"><i class="fa-solid fa-arrow-down"></i> -2.4%</span>
+                                <span style="color:var(--text-muted)">vs last month</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Charts Grid -->
+                    <div class="charts-grid">
+                        <div class="chart-card col-8">
+                            <div class="chart-header">
+                                <div class="chart-title">Team Performance Trend</div>
+                            </div>
+                            <div class="chart-container">
+                                <canvas id="overviewTrendChart"></canvas>
+                            </div>
+                        </div>
+
+                        <div class="chart-card col-4">
+                            <div class="chart-header">
+                                <div class="chart-title">Performance Distribution</div>
+                            </div>
+                            <div class="chart-container">
+                                <canvas id="overviewDistributionChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 2. TEAM PERFORMANCE VIEW -->
+                <section id="team-performance-view" class="view-section">
+                    <div class="page-hero">
+                        <div class="hero-text">
+                            <h2>Department Performance</h2>
+                            <p>Breakdown and metrics across all company departments.</p>
+                        </div>
+                    </div>
+
+                    <div class="dept-grid" id="departmentCardsContainer"></div>
+
+                    <div class="charts-grid">
+                        <div class="chart-card col-12">
+                            <div class="chart-header">
+                                <div class="chart-title">Department Score Comparison</div>
+                            </div>
+                            <div class="chart-container">
+                                <canvas id="departmentComparisonChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 3. EMPLOYEES VIEW -->
+                <section id="employees-view" class="view-section">
+                    <div class="page-hero">
+                        <div class="hero-text">
+                            <h2>Employee Directory</h2>
+                            <p>Manage, track, and monitor employee metrics.</p>
+                        </div>
+                        <div class="hero-actions">
+                            <button class="btn btn-primary role-admin-hr" onclick="app.openModal('addEmployeeModal')"><i
+                                    class="fa-solid fa-plus"></i> Add Employee</button>
+                        </div>
+                    </div>
+
+                    <div class="table-card">
+                        <div class="table-header-bar">
+                            <div class="filters-group">
+                                <input type="text" class="filter-input" id="empSearchInput"
+                                    placeholder="Filter by name...">
+                                <select class="filter-select" id="empDeptFilter">
+                                    <option value="All">All Departments</option>
+                                    <option value="Engineering">Engineering</option>
+                                    <option value="Marketing">Marketing</option>
+                                    <option value="Sales">Sales</option>
+                                    <option value="Finance">Finance</option>
+                                    <option value="HR">HR</option>
+                                    <option value="Operations">Operations</option>
+                                </select>
+                                <select class="filter-select" id="empStatusFilter">
+                                    <option value="All">All Statuses</option>
+                                    <option value="Active">Active</option>
+                                    <option value="On Leave">On Leave</option>
+                                    <option value="Remote">Remote</option>
+                                </select>
+                                <button class="btn btn-secondary" onclick="app.resetEmpFilters()">Clear Filters</button>
+                            </div>
+                            <div style="font-size:0.85rem; color:var(--text-muted);" id="empResultCount">Showing 0
+                                employees</div>
+                        </div>
+
+                        <div class="table-wrapper">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Employee</th>
+                                        <th>Department</th>
+                                        <th>Role</th>
+                                        <th>Performance</th>
+                                        <th>Goal Comp.</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="employeeTableBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 4. GOALS & KPIS VIEW -->
+                <section id="goals-view" class="view-section">
+                    <div class="page-hero">
+                        <div class="hero-text">
+                            <h2>Goals & Trackers</h2>
+                            <p>Strategic targets and key performance indicators.</p>
+                        </div>
+                        <div class="hero-actions">
+                            <button class="btn btn-primary role-admin-mgr" onclick="app.openGoalModal()"><i
+                                    class="fa-solid fa-plus"></i> Create Goal</button>
+                        </div>
+                    </div>
+
+                    <div class="table-card">
+                        <div class="table-wrapper">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Goal Title</th>
+                                        <th>Owner</th>
+                                        <th>Department</th>
+                                        <th>Progress</th>
+                                        <th>Due Date</th>
+                                        <th>Priority</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="goalsTableBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 5. ATTENDANCE VIEW -->
+                <section id="attendance-view" class="view-section">
+                    <div class="attendance-hero">
+                        <div class="attendance-hero-content">
+                            <div class="attendance-eyebrow"><i class="fa-solid fa-wave-square"></i> WORKFORCE PULSE
+                            </div>
+                            <h2>Attendance & Tracking</h2>
+                            <p>Monitor today's workforce in real time, spot exceptions quickly, and keep attendance
+                                decisions data-driven.</p>
+                        </div>
+                        <div class="attendance-hero-actions">
+                            <div class="attendance-live-pill"><span></span> Live tracking <em
+                                    id="attendanceLiveTime">--:--</em></div>
+                            <button type="button" class="btn btn-secondary attendance-refresh-btn"
+                                id="attendanceRefreshBtn" title="Refresh attendance" aria-label="Refresh attendance"><i
+                                    class="fa-solid fa-rotate"></i></button>
+                        </div>
+                    </div>
+
+                    <div class="attendance-kpi-grid">
+                        <div class="attendance-stat-card">
+                            <div class="attendance-stat-icon"><i class="fa-solid fa-user-check"></i></div>
+                            <div><span>Present Today</span><strong id="attPresentToday">0</strong><small
+                                    id="attPresentSub">Across all teams</small></div>
+                        </div>
+                        <div class="attendance-stat-card">
+                            <div class="attendance-stat-icon remote"><i class="fa-solid fa-house-laptop"></i></div>
+                            <div><span>Remote Today</span><strong id="attRemoteToday">0</strong><small>Working
+                                    remotely</small></div>
+                        </div>
+                        <div class="attendance-stat-card">
+                            <div class="attendance-stat-icon late"><i class="fa-solid fa-clock"></i></div>
+                            <div><span>Late Arrivals</span><strong id="attLateToday">0</strong><small>Needs
+                                    follow-up</small></div>
+                        </div>
+                        <div class="attendance-stat-card">
+                            <div class="attendance-stat-icon rate"><i class="fa-solid fa-chart-line"></i></div>
+                            <div><span>Attendance Health</span><strong id="attHealthRate">0%</strong><small>30-day
+                                    workforce rate</small></div>
+                        </div>
+                    </div>
+
+                    <div class="attendance-main-grid">
+                        <div class="chart-card attendance-chart-card">
+                            <div class="chart-header">
+                                <div>
+                                    <div class="chart-title">Presence Pulse</div>
+                                    <div class="attendance-chart-subtitle">On-site vs remote headcount across the
+                                        working week</div>
+                                </div>
+                                <span class="attendance-chart-badge">Live view</span>
+                            </div>
+                            <div class="chart-container attendance-chart-height"><canvas id="attendanceChart"></canvas>
+                            </div>
+                        </div>
+
+                        <div class="attendance-side-card">
+                            <div class="attendance-side-head">
+                                <div>
+                                    <h3>Today at a glance</h3>
+                                    <p>Current workforce distribution</p>
+                                </div>
+                                <i class="fa-solid fa-bolt"></i>
+                            </div>
+                            <div class="attendance-ring-wrap">
+                                <div class="attendance-ring" id="attendanceRing">
+                                    <div><strong id="attendanceRingValue">0%</strong><span>present</span></div>
+                                </div>
+                            </div>
+                            <div class="attendance-legend">
+                                <div><span class="legend-dot"></span><span>Present</span><strong
+                                        id="attLegendPresent">0</strong></div>
+                                <div><span class="legend-dot remote"></span><span>Remote</span><strong
+                                        id="attLegendRemote">0</strong></div>
+                                <div><span class="legend-dot leave"></span><span>Leave / Absent</span><strong
+                                        id="attLegendAbsent">0</strong></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="table-card attendance-table-card">
+                        <div class="table-header-bar">
+                            <div>
+                                <h3 style="margin:0;">Attendance Board</h3>
+                                <p style="margin-top:.25rem;color:var(--text-muted);font-size:.82rem;">Search employees,
+                                    filter exceptions, and review the latest working status.</p>
+                            </div>
+                            <div class="attendance-table-toolbar">
+                                <div class="attendance-search"><input id="attendanceSearchInput" type="search"
+                                        placeholder="Search employee..." autocomplete="off"></div>
+                                <select class="filter-select" id="attendanceDeptFilter"
+                                    aria-label="Filter by department">
+                                    <option value="All">All Departments</option>
+                                    <option>Engineering</option>
+                                    <option>Marketing</option>
+                                    <option>Sales</option>
+                                    <option>Finance</option>
+                                    <option>HR</option>
+                                    <option>Operations</option>
+                                </select>
+                                <select class="filter-select" id="attendanceStatusFilter" aria-label="Filter by status">
+                                    <option value="All">All Statuses</option>
+                                    <option value="Present">Present</option>
+                                    <option value="Remote">Remote</option>
+                                    <option value="Late">Late</option>
+                                    <option value="Leave">Leave</option>
+                                </select>
+                                <button type="button" class="attendance-clear-btn" id="attendanceClearFilters"
+                                    title="Clear attendance filters" aria-label="Clear attendance filters">
+                                    <i class="fa-solid fa-filter-circle-xmark"></i><span>Clear</span>
+                                </button>
+                                <span class="attendance-updated" id="attendanceUpdatedText">Updated just now</span>
+                            </div>
+                        </div>
+                        <div class="table-wrapper">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Employee</th>
+                                        <th>Department</th>
+                                        <th>Today's Status</th>
+                                        <th>Mode</th>
+                                        <th>Check-in</th>
+                                        <th>Present Days</th>
+                                        <th>Attendance Rate</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="attendanceTableBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 6. REPORTS VIEW -->
+                <section id="reports-view" class="view-section">
+                    <div class="page-hero">
+                        <div class="hero-text">
+                            <h2>Export & Analytics Reports</h2>
+                            <p>Generate detailed audit logs and compliance summaries.</p>
+                        </div>
+                    </div>
+
+                    <div class="reports-grid">
+                        <div class="report-card">
+                            <div>
+                                <i class="fa-solid fa-file-pdf report-icon"></i>
+                                <h3>Monthly Team Performance</h3>
+                                <p style="font-size:0.85rem; color:var(--text-muted); margin-top:0.5rem;">Comprehensive
+                                    metric analysis for all departments over the current month.</p>
+                            </div>
+                            <div style="margin-top:1.5rem; display:flex; gap:0.5rem;">
+                                <button type="button" class="btn btn-secondary" style="flex:1"
+                                    onclick="app.generateReport('Monthly Team Performance')">Generate</button>
+                                <button type="button" class="btn btn-primary" onclick="app.openExportModal()"><i
+                                        class="fa-solid fa-download"></i></button>
+                            </div>
+                        </div>
+
+                        <div class="report-card">
+                            <div>
+                                <i class="fa-solid fa-users-gear report-icon"></i>
+                                <h3>Employee Engagement Summary</h3>
+                                <p style="font-size:0.85rem; color:var(--text-muted); margin-top:0.5rem;">Internal
+                                    survey feedback trends and team engagement metrics.</p>
+                            </div>
+                            <div style="margin-top:1.5rem; display:flex; gap:0.5rem;">
+                                <button type="button" class="btn btn-secondary" style="flex:1"
+                                    onclick="app.generateReport('Employee Engagement Summary')">Generate</button>
+                                <button type="button" class="btn btn-primary" onclick="app.openExportModal()"><i
+                                        class="fa-solid fa-download"></i></button>
+                            </div>
+                        </div>
+
+                        <div class="report-card">
+                            <div>
+                                <i class="fa-solid fa-calendar-check report-icon"></i>
+                                <h3>Attendance & Leave Audit</h3>
+                                <p style="font-size:0.85rem; color:var(--text-muted); margin-top:0.5rem;">Log breakdown
+                                    of absences, leaves, remote days, and late arrivals.</p>
+                            </div>
+                            <div style="margin-top:1.5rem; display:flex; gap:0.5rem;">
+                                <button type="button" class="btn btn-secondary" style="flex:1"
+                                    onclick="app.generateReport('Attendance & Leave Audit')">Generate</button>
+                                <button type="button" class="btn btn-primary" onclick="app.openExportModal()"><i
+                                        class="fa-solid fa-download"></i></button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="table-card reports-management-card">
+                        <div class="table-header-bar">
+                            <div>
+                                <h3 style="margin:0;">Saved Reports</h3>
+                                <p style="margin-top:.25rem;color:var(--text-muted);font-size:.82rem;">Create, edit,
+                                    delete and generate custom report definitions.</p>
+                            </div>
+                            <button type="button" class="btn btn-primary role-admin-hr" id="addReportBtn"
+                                aria-label="Add a new report">
+                                <i class="fa-solid fa-plus"></i> Add Report
+                            </button>
+                        </div>
+                        <div class="table-wrapper">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Report</th>
+                                        <th>Type</th>
+                                        <th>Frequency</th>
+                                        <th>Owner</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="reportsTableBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 7. SETTINGS VIEW -->
+                <section id="settings-view" class="view-section">
+                    <div class="page-hero">
+                        <div class="hero-text">
+                            <h2>Application Settings</h2>
+                            <p>Configure local preferences and portal settings.</p>
+                        </div>
+                    </div>
+
+                    <div class="table-card" style="padding:1.5rem;">
+                        <h3 style="margin-bottom:1rem;">Preferences</h3>
+                        <div class="form-group">
+                            <label class="form-label">Theme Mode</label>
+                            <select class="filter-select" style="max-width: 200px;" id="settingsThemeSelect"
+                                onchange="app.setTheme(this.value)">
+                                <option value="light">Light Mode</option>
+                                <option value="dark">Dark Mode</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="margin-top:1.5rem;">
+                            <button class="btn btn-danger" onclick="app.resetAllData()">Reset Application Data</button>
+                        </div>
+                    </div>
+                </section>
+
+            </main>
+        </div>
+    </div>
+
+    <!-- MODAL SYSTEM -->
+    <!-- 1. Add Employee Modal -->
+    <div class="modal-overlay" id="addEmployeeModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title" id="employeeModalTitle">Add New Employee</h3>
+                <button class="modal-close" onclick="app.closeModal('addEmployeeModal')">&times;</button>
+            </div>
+            <form id="employeeForm" onsubmit="app.handleEmployeeFormSubmit(event)">
+                <input type="hidden" id="empFormId">
+                <div class="modal-body">
+                    <div class="avatar-upload-panel">
+                        <div class="avatar-preview-wrap">
+                            <img id="empFormAvatarPreview" class="employee-form-avatar"
+                                src="https://i.pravatar.cc/150?img=68" alt="Employee preview">
+                        </div>
+                        <div class="avatar-upload-content">
+                            <label class="form-label">Profile Picture</label>
+                            <p class="avatar-help">Upload a clear photo. It will appear in the employee directory and
+                                saved locally in this browser.</p>
+                            <input type="file" id="empFormAvatar" class="form-control" accept="image/*">
+                            <button type="button" class="btn btn-secondary avatar-remove-btn"
+                                onclick="app.removeEmployeeAvatar()">
+                                <i class="fa-solid fa-image"></i> Use default avatar
+                            </button>
+                        </div>
+                    </div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">Full Name</label>
+                            <input type="text" class="form-control" id="empFormName" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Email</label>
+                            <input type="email" class="form-control" id="empFormEmail" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Department</label>
+                            <select class="form-control" id="empFormDept">
+                                <option>Engineering</option>
+                                <option>Marketing</option>
+                                <option>Sales</option>
+                                <option>Finance</option>
+                                <option>HR</option>
+                                <option>Operations</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Role Title</label>
+                            <input type="text" class="form-control" id="empFormRole" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Performance (%)</label>
+                            <input type="number" class="form-control" id="empFormPerf" min="0" max="100" value="85"
+                                required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Goal Completion (%)</label>
+                            <input type="number" class="form-control" id="empFormGoals" min="0" max="100" value="80"
+                                required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Status</label>
+                            <select class="form-control" id="empFormStatus">
+                                <option>Active</option>
+                                <option>On Leave</option>
+                                <option>Remote</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary"
+                        onclick="app.closeModal('addEmployeeModal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Employee</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <!-- Report Management Modal -->
+    <div class="modal-overlay" id="reportModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title" id="reportModalTitle">Add Report</h3>
+                <button type="button" class="modal-close" onclick="app.closeModal('reportModal')"
+                    aria-label="Close report dialog">&times;</button>
+            </div>
+            <form id="reportForm" onsubmit="app.handleReportFormSubmit(event)">
+                <input type="hidden" id="reportFormId">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="form-label">Report Name</label>
+                        <input type="text" class="form-control" id="reportFormName" required>
+                    </div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">Report Type</label>
+                            <select class="form-control" id="reportFormType">
+                                <option>Performance</option>
+                                <option>Engagement</option>
+                                <option>Attendance</option>
+                                <option>Compliance</option>
+                                <option>Custom</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Frequency</label>
+                            <select class="form-control" id="reportFormFrequency">
+                                <option>Monthly</option>
+                                <option>Weekly</option>
+                                <option>Daily</option>
+                                <option>On Demand</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Owner</label>
+                            <input type="text" class="form-control" id="reportFormOwner" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Status</label>
+                            <select class="form-control" id="reportFormStatus">
+                                <option>Active</option>
+                                <option>Draft</option>
+                                <option>Archived</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary"
+                        onclick="app.closeModal('reportModal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Report</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 2. Goal Modal -->
+    <div class="modal-overlay" id="addGoalModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title" id="goalModalTitle">Create New Goal</h3>
+                <button class="modal-close" type="button" onclick="app.closeModal('addGoalModal')">&times;</button>
+            </div>
+            <form id="goalForm" onsubmit="app.handleGoalFormSubmit(event)">
+                <input type="hidden" id="goalFormId" value="">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="form-label">Goal Title</label>
+                        <input type="text" class="form-control" id="goalTitle" required>
+                    </div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">Owner</label>
+                            <input type="text" class="form-control" id="goalOwner" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Department</label>
+                            <select class="form-control" id="goalDept">
+                                <option>Engineering</option>
+                                <option>Marketing</option>
+                                <option>Sales</option>
+                                <option>Finance</option>
+                                <option>HR</option>
+                                <option>Operations</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Due Date</label>
+                            <input type="date" class="form-control" id="goalDueDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Priority</label>
+                            <select class="form-control" id="goalPriority">
+                                <option>Low</option>
+                                <option>Medium</option>
+                                <option>High</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Progress (%)</label>
+                            <input type="number" class="form-control" id="goalProgress" min="0" max="100" value="0"
+                                required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Status</label>
+                            <select class="form-control" id="goalStatus">
+                                <option>In Progress</option>
+                                <option>Completed</option>
+                                <option>At Risk</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary"
+                        onclick="app.closeModal('addGoalModal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="goalSubmitBtn">Create Target</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 3. Export Data Modal -->
+    <div class="modal-overlay" id="exportModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">Export Dataset</h3>
+                <button class="modal-close" onclick="app.closeModal('exportModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Select Dataset</label>
+                    <select class="form-control" id="exportDatasetSelect">
+                        <option value="employees">Employee Directory</option>
+                        <option value="goals">Goals & Targets</option>
+                        <option value="attendance">Attendance Logs</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Format</label>
+                    <select class="form-control" id="exportFormatSelect">
+                        <option value="csv">CSV File (.csv)</option>
+                        <option value="json">JSON Format (.json)</option>
+                        <option value="pdf">PDF Document (.pdf)</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="app.closeModal('exportModal')">Cancel</button>
+                <button class="btn btn-primary" onclick="app.executeExport()"><i class="fa-solid fa-download"></i>
+                    Download Export</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. User Profile Modal -->
+    <div class="modal-overlay" id="userProfileModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">User Profile</h3>
+                <button class="modal-close" onclick="app.closeModal('userProfileModal')">&times;</button>
+            </div>
+            <div class="modal-body" style="text-align: center;">
+                <img src="https://i.pravatar.cc/150?img=68"
+                    style="width:80px; height:80px; border-radius:50%; margin-bottom:1rem;" alt="Avatar">
+                <h3>Alex Morgan</h3>
+                <p style="color:var(--text-muted);" id="userProfileModalRole">Senior Admin / Analyst</p>
+                <p style="margin-top:0.5rem; font-size:0.85rem;">alex.morgan@pulseanalytics.io</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="app.closeModal('userProfileModal')">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST CONTAINER -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- JAVASCRIPT -->
+    <script src="script.js"></script>
+</body>
+
+</html>
