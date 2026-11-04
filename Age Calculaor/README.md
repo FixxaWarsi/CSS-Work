@@ -7,7 +7,6 @@ The application is designed with a clean and intuitive interface, making it easy
 Whether you want to know your exact age or explore how much time has passed since your birth, this Age Calculator provides a quick and convenient solution.
 
 🌐 Live Demo
-
 Try the application here:
 https://ageecalculattor.netlify.app/
 
