@@ -101,6 +101,3 @@ Visit the deployed application:
 **[https://ageecalculattor.netlify.app/](https://ageecalculattor.netlify.app/)**
 
 ---
----
-
-⭐ **If you find this project useful, consider giving the repository a star!**
