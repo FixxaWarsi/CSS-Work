@@ -1,0 +1,310 @@
+ /* CSS Variables for easy color management */
+ :root {
+     --primary: #6366f1;
+     --primary-hover: #4f46e5;
+     --background-start: #eef2ff;
+     --background-end: #e0e7ff;
+     --card-bg: #ffffff;
+     --text-main: #1e293b;
+     --text-muted: #64748b;
+     --border-color: #e2e8f0;
+     --error-color: #ef4444;
+     --radius-lg: 20px;
+     --radius-md: 12px;
+     --shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.15), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+ }
+
+ * {
+     box-sizing: border-box;
+     margin: 0;
+     padding: 0;
+     font-family: 'Poppins', sans-serif;
+ }
+
+ body {
+     min-height: 100vh;
+     background: linear-gradient(135deg, var(--background-start), var(--background-end));
+     display: flex;
+     justify-content: center;
+     align-items: center;
+     padding: 20px;
+     color: var(--text-main);
+ }
+
+ /* Container Card */
+ .calculator-card {
+     background-color: var(--card-bg);
+     width: 100%;
+     max-width: 420px;
+     border-radius: var(--radius-lg);
+     box-shadow: var(--shadow);
+     overflow: hidden;
+     border: 1px solid rgba(255, 255, 255, 0.8);
+ }
+
+ /* Card Header */
+ .card-header {
+     background: linear-gradient(135deg, #6366f1, #8b5cf6);
+     color: #ffffff;
+     padding: 28px 20px;
+     text-align: center;
+ }
+
+ .header-icon {
+     font-size: 32px;
+     margin-bottom: 8px;
+ }
+
+ .card-header h1 {
+     font-size: 22px;
+     font-weight: 700;
+ }
+
+ .card-header p {
+     font-size: 13px;
+     opacity: 0.9;
+     margin-top: 4px;
+ }
+
+ /* Card Body & Form */
+ .card-body {
+     padding: 24px;
+ }
+
+ .form-group {
+     margin-bottom: 20px;
+ }
+
+ .form-group label {
+     display: block;
+     font-size: 13px;
+     font-weight: 600;
+     color: var(--text-muted);
+     margin-bottom: 8px;
+     text-transform: uppercase;
+     letter-spacing: 0.5px;
+ }
+
+ .form-group label i {
+     color: var(--primary);
+     margin-right: 4px;
+ }
+
+ .date-input {
+     width: 100%;
+     padding: 12px 16px;
+     border: 2px solid var(--border-color);
+     border-radius: var(--radius-md);
+     font-size: 15px;
+     font-weight: 500;
+     color: var(--text-main);
+     outline: none;
+     transition: border-color 0.2s ease;
+     background-color: #f8fafc;
+ }
+
+ .date-input:focus {
+     border-color: var(--primary);
+     background-color: #ffffff;
+ }
+
+ .error-message {
+     color: var(--error-color);
+     font-size: 12px;
+     font-weight: 500;
+     margin-top: 6px;
+     display: flex;
+     align-items: center;
+     gap: 6px;
+ }
+
+ /* Action Buttons */
+ .button-group {
+     display: flex;
+     gap: 10px;
+ }
+
+ .btn-submit {
+     flex: 1;
+     background: linear-gradient(135deg, var(--primary), var(--primary-hover));
+     color: #ffffff;
+     border: none;
+     padding: 12px 20px;
+     border-radius: var(--radius-md);
+     font-size: 14px;
+     font-weight: 600;
+     cursor: pointer;
+     display: flex;
+     align-items: center;
+     justify-content: center;
+     gap: 8px;
+     transition: transform 0.1s ease, box-shadow 0.2s ease;
+ }
+
+ .btn-submit:hover {
+     box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+ }
+
+ .btn-submit:active {
+     transform: scale(0.98);
+ }
+
+ .btn-reset {
+     background-color: #f1f5f9;
+     color: var(--text-muted);
+     border: none;
+     padding: 12px 16px;
+     border-radius: var(--radius-md);
+     font-size: 14px;
+     cursor: pointer;
+     transition: background-color 0.2s ease;
+ }
+
+ .btn-reset:hover {
+     background-color: #e2e8f0;
+     color: var(--text-main);
+ }
+
+ /* Results Display */
+ .results-section {
+     margin-top: 24px;
+     border-top: 1px solid var(--border-color);
+     padding-top: 20px;
+ }
+
+ .hidden {
+     display: none !important;
+ }
+
+ /* Main Age Cards */
+ .age-boxes {
+     display: grid;
+     grid-template-columns: repeat(3, 1fr);
+     gap: 10px;
+     margin-bottom: 16px;
+ }
+
+ .age-box {
+     background-color: #f8fafc;
+     border: 1px solid var(--border-color);
+     border-radius: var(--radius-md);
+     padding: 12px;
+     text-align: center;
+ }
+
+ .age-box .number {
+     display: block;
+     font-size: 24px;
+     font-weight: 700;
+     color: var(--primary);
+ }
+
+ .age-box .label {
+     font-size: 11px;
+     font-weight: 600;
+     color: var(--text-muted);
+     text-transform: uppercase;
+ }
+
+ /* Next Birthday Box */
+ .birthday-banner {
+     background: #faf5ff;
+     border: 1px solid #e9d5ff;
+     border-radius: var(--radius-md);
+     padding: 12px 16px;
+     display: flex;
+     justify-content: space-between;
+     align-items: center;
+     margin-bottom: 16px;
+ }
+
+ .birthday-info {
+     display: flex;
+     align-items: center;
+     gap: 12px;
+ }
+
+ .birthday-icon {
+     width: 36px;
+     height: 36px;
+     background-color: #f3e8ff;
+     color: #9333ea;
+     border-radius: 50%;
+     display: flex;
+     align-items: center;
+     justify-content: center;
+     font-size: 16px;
+ }
+
+ .birthday-text .title {
+     font-size: 13px;
+     font-weight: 600;
+     display: block;
+ }
+
+ .birthday-text .subtitle {
+     font-size: 11px;
+     color: var(--text-muted);
+ }
+
+ .birthday-days {
+     text-align: right;
+ }
+
+ .birthday-days .days-count {
+     font-size: 18px;
+     font-weight: 700;
+     color: #9333ea;
+     display: block;
+     line-height: 1;
+ }
+
+ .birthday-days .days-label {
+     font-size: 10px;
+     font-weight: 600;
+     color: #a855f7;
+     text-transform: uppercase;
+ }
+
+ /* Detailed Stats Grid */
+ .section-title {
+     font-size: 12px;
+     font-weight: 600;
+     color: var(--text-muted);
+     text-transform: uppercase;
+     margin-bottom: 10px;
+     letter-spacing: 0.5px;
+ }
+
+ .stats-grid {
+     display: grid;
+     grid-template-columns: repeat(2, 1fr);
+     gap: 10px;
+ }
+
+ .stat-card {
+     background-color: #f8fafc;
+     border: 1px solid var(--border-color);
+     border-radius: var(--radius-md);
+     padding: 10px 12px;
+ }
+
+ .stat-card .stat-label {
+     font-size: 11px;
+     color: var(--text-muted);
+     display: block;
+ }
+
+ .stat-card .stat-value {
+     font-size: 14px;
+     font-weight: 600;
+     color: var(--text-main);
+     margin-top: 2px;
+     display: block;
+ }
+
+ .stat-card .stat-value.seconds {
+     color: var(--primary);
+     font-family: monospace;
+     font-size: 15px;
+ }

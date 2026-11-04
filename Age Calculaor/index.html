@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Age Calculator</title>
+
+    <!-- Google Fonts: Poppins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- Calculator Main Container -->
+    <main class="calculator-card">
+
+        <!-- Header -->
+        <div class="card-header">
+            <div class="header-icon">
+                <i class="fa-solid fa-cake-candles"></i>
+            </div>
+            <h1>Age Calculator</h1>
+            <p>Discover your exact age & detailed stats!</p>
+        </div>
+
+        <!-- Body -->
+        <div class="card-body">
+
+            <!-- Date Input Form -->
+            <form id="ageForm" novalidate>
+                <div class="form-group">
+                    <label for="dob">
+                        <i class="fa-regular fa-calendar-days"></i> Date of Birth
+                    </label>
+                    <input type="date" id="dob" class="date-input" required>
+                    <div id="errorText" class="error-message hidden">
+                        <i class="fa-solid fa-circle-exclamation"></i>
+                        <span id="errorMessageContent">Please select a valid date.</span>
+                    </div>
+                </div>
+
+                <div class="button-group">
+                    <button type="submit" class="btn-submit">
+                        <i class="fa-solid fa-calculator"></i> Calculate
+                    </button>
+                    <button type="button" id="resetBtn" class="btn-reset" title="Reset Calculator">
+                        <i class="fa-solid fa-rotate-right"></i>
+                    </button>
+                </div>
+            </form>
+
+            <!-- Results Section -->
+            <div id="resultsSection" class="results-section hidden">
+
+                <!-- Main Age Output -->
+                <div class="age-boxes">
+                    <div class="age-box">
+                        <span id="yearsVal" class="number">0</span>
+                        <span class="label">Years</span>
+                    </div>
+                    <div class="age-box">
+                        <span id="monthsVal" class="number">0</span>
+                        <span class="label">Months</span>
+                    </div>
+                    <div class="age-box">
+                        <span id="daysVal" class="number">0</span>
+                        <span class="label">Days</span>
+                    </div>
+                </div>
+
+                <!-- Next Birthday Banner -->
+                <div class="birthday-banner">
+                    <div class="birthday-info">
+                        <div class="birthday-icon">
+                            <i class="fa-solid fa-gift"></i>
+                        </div>
+                        <div class="birthday-text">
+                            <span class="title">Next Birthday</span>
+                            <span id="nextBdaySub" class="subtitle">Calculating...</span>
+                        </div>
+                    </div>
+                    <div class="birthday-days">
+                        <span id="nextBdayDays" class="days-count">0</span>
+                        <span class="days-label">Days Left</span>
+                    </div>
+                </div>
+
+                <!-- Detailed Statistics Grid -->
+                <div class="section-title">Total Statistics</div>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <span class="stat-label">Total Months</span>
+                        <span id="totalMonths" class="stat-value">0</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-label">Total Weeks</span>
+                        <span id="totalWeeks" class="stat-value">0</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-label">Total Days</span>
+                        <span id="totalDays" class="stat-value">0</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-label">Total Hours</span>
+                        <span id="totalHours" class="stat-value">0</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-label">Total Minutes</span>
+                        <span id="totalMinutes" class="stat-value">0</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-label">Total Seconds</span>
+                        <span id="totalSeconds" class="stat-value seconds">0</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
